@@ -4,6 +4,7 @@ gem 'rails', '3.2.11'
 
 # Gems for all enviroments
 gem 'haml'
+gem 'haml-rails'
 gem 'jquery-rails'
 gem 'uuidtools'
 # Mongo ODM - mongo_mapper
@@ -40,7 +41,8 @@ group :development, :test do
   gem 'capybara'
   # gem 'launchy'
   # Functional and unit testing - rspec-rails
-  gem 'rspec-rails'
+  # gem 'rspec', '2.4.0'
+  gem 'rspec-rails', '2.4.0'
   # Code coverage - simplecov
   gem 'simplecov', :require => false
   # Mocks - factory_girl
