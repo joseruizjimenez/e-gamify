@@ -1,5 +1,6 @@
 EGamify::Application.routes.draw do
   get "home/index"
+  get "widgets/main_bar"
 
   devise_for :site_owners, :controllers => { :registrations => "registrations" }
 

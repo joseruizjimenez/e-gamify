@@ -1,2 +1,9 @@
-%h1 Home#index
+%h1#fb-bt Home#index
 %p Find me in app/views/home/index.html.haml
+
+#fb-root
+//= javascript_include_tag "fb_login"
+
+#e-gamify-main-bar{ :s_id => "AAAAAA", :style => "classic" }
+//= javascript_include_tag "main_bar"
+//%script{:src => "assets/main-bar", :type => "text/javascript"}

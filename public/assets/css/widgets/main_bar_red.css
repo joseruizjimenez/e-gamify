@@ -1,0 +1,7 @@
+#e-gamify-main-bar {
+  background-color: red;
+  position:fixed !important;
+  position: absolute; /*ie6 */
+  right: 1em;
+  bottom: 0;
+}
