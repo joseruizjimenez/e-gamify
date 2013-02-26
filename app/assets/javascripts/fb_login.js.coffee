@@ -1,51 +1,77 @@
-login = ->
-  FB.login ((response) ->
-    if response.authResponse
-      # connected
-      FB.api "/me", (response) ->
-        alert "hola " + response.email
-    else
-      alert "nada"
-  ),
-    scope: "email"
+(->
+
+  login = ->
+    FB.login ((response) ->
+      if response.authResponse
+        # connected
+        FB.api "/me", (response) ->
+          alert "hola " + response.email
+      else
+        alert "nada"
+    ),
+      scope: "email"
 
 
-$("#fb-bt").click ->
-  login()
+  testAPI = ->
+    console.log "Welcome!  Fetching your information.... "
+    FB.api "/me", (response) ->
+      console.log "Good to see you, " + response.name + "."
 
 
-testAPI = ->
-  console.log "Welcome!  Fetching your information.... "
-  FB.api "/me", (response) ->
-    console.log "Good to see you, " + response.name + "."
+  window.fbAsyncInit = ->
+    FB.init
+      appId: "451013134972296"
+      channelUrl: "//localhost:3000/channel.html"
+      status: true
+      cookie: true
+      xfbml: true
 
 
-window.fbAsyncInit = ->
-  FB.init
-    appId: "451013134972296"
-    channelUrl: "//localhost/channel.html"
-    status: true
-    cookie: true
-    xfbml: true
+    FB.getLoginStatus (response) ->
+      # SI ESTA LOGUEADO Y AUTORIZADO
+      if response.status is "connected"
+        user = undefined
+        s = $("#e-gamify-login").attr("s")
+        fb_login_token = $("#e-gamify-login").attr("fb_lt")
 
-  FB.getLoginStatus (response) ->
-    if response.status is "connected"
-      alert "usuario logueado"
-    else if response.status is "not_authorized"
-      #login()
-    else
-      #login()
+        FB.api "/me", (res) ->
+          user["name"] = res.name
+          user["email"] = res.email
+          user["fb_id"] = res.user_id
+          user["fb_expires_at"] = res.expires
+          user["fb_login_token"] = fb_login_token
+          user["fb_access_token"] = response.accessToken
+        req = $.ajax
+          #url: "http://localhost:3000/widgets/fb_login?s="+s+"&fb_lt="+fb_login_token
+          url: "http://localhost:3000/shops/"+s+"/users/"
+          type: "POST"
+          data: { user : user }
+          dataType: "json"
+
+        req.done (msg) ->
+          console.log "post realizado"
+
+        req.fail (jqXHR, textStatus) ->
+          console.log "post fallido: " + textStatus
+
+      # SINO...
+      else if response.status is "not_authorized"
+        #login()
+      else
+        #login()
 
 
-# Load the SDK Asynchronously
-((d) ->
-  js = undefined
-  id = "facebook-jssdk"
-  ref = d.getElementsByTagName("script")[0]
-  return  if d.getElementById(id)
-  js = d.createElement("script")
-  js.id = id
-  js.async = true
-  js.src = "//connect.facebook.net/en_US/all.js"
-  ref.parentNode.insertBefore js, ref
-) document
+  # Load the SDK Asynchronously
+  ((d) ->
+    js = undefined
+    id = "facebook-jssdk"
+    ref = d.getElementsByTagName("script")[0]
+    return  if d.getElementById(id)
+    js = d.createElement("script")
+    js.id = id
+    js.async = true
+    js.src = "http://connect.facebook.net/en_US/all.js"
+    ref.parentNode.insertBefore js, ref
+  ) document
+
+)()

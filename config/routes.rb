@@ -1,6 +1,7 @@
 EGamify::Application.routes.draw do
   get "home/index"
   get "widgets/main_bar"
+  get "widgets/fb_login"
 
   devise_for :site_owners, :controllers => { :registrations => "registrations" }
 
@@ -17,6 +18,10 @@ EGamify::Application.routes.draw do
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
+  resources :rewards
+  resources :shops do
+    resources :users
+  end
 
   # Sample resource route with options:
   #   resources :products do

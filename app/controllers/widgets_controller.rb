@@ -6,4 +6,7 @@ class WidgetsController < ApplicationController
     jsonp = callback + "(" + json + ")"
     render :text => jsonp, :content_type => "text/javascript"
   end
+
+  def fb_login
+  end
 end
