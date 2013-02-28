@@ -2,6 +2,7 @@ EGamify::Application.routes.draw do
   get "home/index"
   get "widgets/main_bar"
   get "widgets/fb_login"
+  get "widgets/fb_check"
 
   devise_for :site_owners, :controllers => { :registrations => "registrations" }
 

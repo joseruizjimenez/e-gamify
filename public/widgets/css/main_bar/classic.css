@@ -7,5 +7,10 @@
 }
 
 #e-gamify-main-bar iframe {
-  /*display: none;*/
+  display: none;
+  visibility: hidden;
+}
+
+#fb-bt {
+  color: red;
 }

@@ -29,36 +29,43 @@
 
     FB.getLoginStatus (response) ->
       # SI ESTA LOGUEADO Y AUTORIZADO
-      if response.status is "connected"
-        user = undefined
-        s = $("#e-gamify-login").attr("s")
-        fb_login_token = $("#e-gamify-login").attr("fb_lt")
+      jQuery(document).ready ($) ->
+        $("#fb-bt").click ->
+          login()
 
-        FB.api "/me", (res) ->
-          user["name"] = res.name
-          user["email"] = res.email
-          user["fb_id"] = res.user_id
-          user["fb_expires_at"] = res.expires
-          user["fb_login_token"] = fb_login_token
-          user["fb_access_token"] = response.accessToken
-        req = $.ajax
-          #url: "http://localhost:3000/widgets/fb_login?s="+s+"&fb_lt="+fb_login_token
-          url: "http://localhost:3000/shops/"+s+"/users/"
-          type: "POST"
-          data: { user : user }
-          dataType: "json"
+        if response.status is "connected"
+          s = $("#e-gamify-login").attr("s")
+          fb_login_token = $("#e-gamify-login").attr("fb_lt")
 
-        req.done (msg) ->
-          console.log "post realizado"
+          FB.api "/me", (res) ->
+            user = {
+              "name" : res.name,
+              "email" : res.email,
+              "fb_id" : res.id,
+              "fb_expires_at" : response.authResponse.expiresIn,
+              "fb_login_token" : fb_login_token,
+              "fb_access_token" : response.authResponse.accessToken
+            }
+            req = $.ajax
+              url: "http://localhost:3000/shops/"+s+"/users/"
+              type: "POST"
+              data: JSON.stringify(user)
+              contentType: 'application/json'
+              dataType: "json"
 
-        req.fail (jqXHR, textStatus) ->
-          console.log "post fallido: " + textStatus
+            req.done (msg) ->
+              # user fetch OK
 
-      # SINO...
-      else if response.status is "not_authorized"
-        #login()
-      else
-        #login()
+            req.fail (jqXHR, textStatus) ->
+              console.log "post fallido: " + textStatus
+
+        # SINO...
+        else if response.status is "not_authorized"
+          #login()
+          console.log "no autorizado"
+        else
+          #login()
+          console.log "no logueado en fb"
 
 
   # Load the SDK Asynchronously

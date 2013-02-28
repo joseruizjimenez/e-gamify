@@ -1,7 +1,7 @@
 class Reward
-  include MongoMapper::Document
+  include MongoMapper::EmbeddedDocument
 
-  key :name, String
+  key :name, String, :required => true
   key :info, String
   key :cost, Integer
   key :available, Integer, :default => 0
@@ -9,10 +9,10 @@ class Reward
   key :img_uri, String
   key :info_uri, String
   key :active, Boolean, :default => true
-  key :activate_at, Date
-  key :expire_at, Date
+  key :activate_at, Time
+  key :expire_at, Time
   timestamps!
 
-  belongs_to :shop
+  embedded_in :shop
 
 end

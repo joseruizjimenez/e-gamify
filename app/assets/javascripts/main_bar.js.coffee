@@ -2,18 +2,25 @@
 
   jQuery = undefined
   user = undefined
-  login_checks = 10
+  login_checks = 5
+  checking = undefined
 
   login_token = ->
     return Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2)
 
 
-  fb_login_check = (shop, fb_login_token) ->
-    jsonp_url = "http://localhost:3000/widgets/fb_check?s=" + shop +
-      "&fb_lt=" + fb_login_token + "&callback=?"
-    $.getJSON jsonp_url, (data) ->
-      login_checks--
-      user = data.json
+  # fb_login_check = (shop, fb_login_token) ->
+  #   console.log "login checks: " + login_checks
+  #   jsonp_url = "http://localhost:3000/widgets/fb_check?s=" + shop +
+  #     "&fb_lt=" + fb_login_token + "&callback=?"
+  #   jQuery.getJSON jsonp_url, (data) ->
+  #     login_checks--
+  #     console.log "login checks: " + login_checks
+  #     if (login_checks <= 0 or (user isnt undefined and user.id isnt undefined))
+  #       console.log "login checks: " + login_checks
+  #       window.clearInterval(checking)
+  #     console.log data
+  #     user = data
 
 
   # called once jquery has loaded
@@ -36,9 +43,10 @@
       )
       css_link.appendTo "head"
 
-      s = $("#e-gamify-main-bar").attr("shop")
+      shop_id = $("#e-gamify-main-bar").attr("shop")
 
-      # SI HAY COOKIE (Y NO CADUCADA), SOLICITA /shops/:s/users/:user_id?s_token=:s_token
+      # SI HAY COOKIE (Y NO CADUCADA?), SOLICITA /shops/:s/users/:user_id?s_token=:s_token
+      #   en servidor, si  ese s_token no coincide (o caducado) en la query es que ha de reloguearse
       # si es válido tendremos el usuario, sino:
       # SI NO HAY COOKIE O SESION COOKIE NO VALIDA: se pone lo de complemento fb_login
 
@@ -47,22 +55,35 @@
       main_bar_html = "
         <h2 id='fb-bt'>hola</h2>
         <h2 id='e-gamify-status'>comprobando...</h2>
-        <iframe src='http://localhost:3000/widgets/fb_login?s=" + s +
+        <iframe src='http://localhost:3000/widgets/fb_login?s=" + shop_id +
           "&fb_lt=" + fb_login_token + "'></iframe>
         "
       $("#e-gamify-main-bar").html main_bar_html
 
-      # check fb login status each 2 seconds for 20 seconds
-      checking = setInterval(fb_login_check(s, fb_login_token), 2000)
-      while login_checks isnt 0 and (user is 'undefined' or user.id is 'undefined')
-      clearInterval checking
+      updateUserStatus = (logued_user) ->
+        if logued_user isnt undefined
+          # user loged in
+          $("#e-gamify-status").html logued_user.name + " logueado!!!"
+          $("#e-gamify-status").append "<img src='https://graph.facebook.com/" + logued_user.fb_id + "/picture'>"
+          # PONER DATOS USUARIO EN COOKIE CON BASE64......
+        else
+          # user not loged in
+          $("#e-gamify-status").html "NO logueado"
 
-      if user isnt 'undefined' and "id" in user
-        # user loged in
-        $("#e-gamify-status").html user.name + " logueado!!!"
-      else
-        # user not loged in
-        $("#e-gamify-status").html "NO logueado"
+      # check fb login status each 2 seconds for 20 seconds
+      jsonp_url = "http://localhost:3000/widgets/fb_check?s=" + shop_id +
+        "&fb_lt=" + fb_login_token + "&callback=?"
+      checking = setInterval () ->
+        if (login_checks < 0 or (user isnt undefined and user.id isnt undefined))
+          clearInterval checking
+          updateUserStatus(user)
+        else
+          login_checks--
+          jQuery.getJSON jsonp_url, (data) ->
+            user = data
+      , 2000
+
+
 
       ### load data
       s = $("#e-gamify-main-bar").attr("s_id")
