@@ -6,11 +6,11 @@ class WidgetsController < ApplicationController
 
 
   def fb_check
-    shop = Shop.find(params[:s])
-    json = { nothing: "" }.to_json
-    unless shop.users.empty?
-      @user = ( shop.users.each { |u| u.fb_login_token == params[:fb_lt] } )[0]
-      json = @user.to_json unless @user.nil?
+    @user = User.first({'shop_id' => params[:s], 'fb_login_token' => params[:fb_lt]})
+    if @user.nil?
+      json = { nothing: "" }.to_json
+    else
+      json = @user.to_json
     end
 
     # answer as JSON with Padding (cross domain)

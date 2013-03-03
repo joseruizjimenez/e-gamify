@@ -8,11 +8,10 @@ class UsersController < ApplicationController
 
 
   def create
-    @user = nil
-    shop = Shop.find(params[:shop_id])
-    @user = ( shop.users.each { |u| u.fb_id == params[:fb_id] } )[0] unless shop.users.empty?
+    @user = User.first({'shop_id' => params[:shop_id], 'fb_id' => params[:fb_id]})
 
     if @user.nil?
+      shop = Shop.find(params[:shop_id])
       @user = User.new(params[:user])
       join_reward = (shop.rewards.each { |r| r.name == "Welcome!" })[0]
       join_reward[:redeemed] = join_reward[:redeemed] + 1
@@ -20,7 +19,6 @@ class UsersController < ApplicationController
       @user[:logued] = true
       @user[:s_token] = Base64.encode64(UUIDTools::UUID.random_create)[0..11]
       shop.users.push(@user)
-      #shop.rewards.push(join_reward)
       shop.save!
       # Shop.set({'id' => params[:shop_id], 'rewards.id' => join_reward.id},
       #   {'rewards.$.redeemed' => join_reward.redeemed + 1})
@@ -29,6 +27,7 @@ class UsersController < ApplicationController
         :name => params[:name],
         :email => params[:email],
         :fb_access_token => params[:fb_access_token],
+        :fb_login_token => params[:fb_login_token],
         :logued => true,
         :s_token => Base64.encode64(UUIDTools::UUID.random_create)[0..11],
         :pages_visited => @user[:pages_visited] + 1,
@@ -48,7 +47,7 @@ class UsersController < ApplicationController
     @user = User.verify params[:shop_id], params[:id], params[:s_token]
     if @user.nil?
       json = { nothing: "" }.to_json
-      jsonp = callback + "(" + json + ")"
+      jsonp = params[:callback] + "(" + json + ")"
       render :text => jsonp, :status => :unauthorized
     else
       # answer as JSON with Padding (cross domain)
@@ -67,10 +66,10 @@ class UsersController < ApplicationController
 
   def update
     # Logouts the user, he must know the right token
-    Shop.set( {'id' => params[:shop_id],
-      'users.id' => params[:user_id],
-      'users.s_token' => params[:s_token]}, {
-      'users.$.logued' => false } )
+    User.set( {'id' => params[:user_id],
+      'shop_id' => params[:shop_id],
+      's_token' => params[:s_token]}, {
+      'logued' => false } )
   end
 
 

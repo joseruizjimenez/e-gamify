@@ -1,5 +1,5 @@
 class User
-  include MongoMapper::EmbeddedDocument
+  include MongoMapper::Document
 
   key :name, String
   key :email, String
@@ -20,13 +20,11 @@ class User
   key :reward_ids, Array
   timestamps!
 
-  embedded_in :shop
+  belongs_to :shop
   # many :rewards, :in => :reward_ids
 
   def self.verify(shop_id, user_id, s_token)
-    shop = Shop.find shop_id
-    if shop.users.empty? then nil
-    else (shop.users.each { |u| u.id == user_id and u.s_token == s_token} )[0] end
+    return User.first({'shop_id' => shop_id, 'id' => user_id, 's_token' => s_token})
   end
 
 end
