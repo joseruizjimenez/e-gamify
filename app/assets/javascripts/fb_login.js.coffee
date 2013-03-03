@@ -1,5 +1,13 @@
 (->
 
+  debugger_mode = true
+
+
+  log = (msg)->
+    if debugger_mode
+      console.log msg
+
+
   login = ->
     FB.login ((response) ->
       if response.authResponse
@@ -12,12 +20,6 @@
       scope: "email"
 
 
-  testAPI = ->
-    console.log "Welcome!  Fetching your information.... "
-    FB.api "/me", (response) ->
-      console.log "Good to see you, " + response.name + "."
-
-
   window.fbAsyncInit = ->
     FB.init
       appId: "451013134972296"
@@ -26,7 +28,7 @@
       cookie: true
       xfbml: true
 
-
+    log "FB: Checking login status..."
     FB.getLoginStatus (response) ->
       # SI ESTA LOGUEADO Y AUTORIZADO
       jQuery(document).ready ($) ->
@@ -54,22 +56,25 @@
               dataType: "json"
 
             req.done (msg) ->
-              # user fetch OK
+              # user POST OK
 
             req.fail (jqXHR, textStatus) ->
-              console.log "post fallido: " + textStatus
+              log "post fallido: " + textStatus
+
+          log "FB: user connected"
 
         # SINO...
         else if response.status is "not_authorized"
           #login()
-          console.log "no autorizado"
+          log "FB: user not authorized"
         else
           #login()
-          console.log "no logueado en fb"
+          log "FB: user not logued"
 
 
   # Load the SDK Asynchronously
   ((d) ->
+    log "FB: loading SDK..."
     js = undefined
     id = "facebook-jssdk"
     ref = d.getElementsByTagName("script")[0]

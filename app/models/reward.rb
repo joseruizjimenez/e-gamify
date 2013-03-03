@@ -4,7 +4,7 @@ class Reward
   key :name, String, :required => true
   key :info, String
   key :cost, Integer
-  key :available, Integer, :default => 0
+  key :available, Integer, :default => -1
   key :redeemed, Integer, :default => 0
   key :img_uri, String
   key :info_uri, String
