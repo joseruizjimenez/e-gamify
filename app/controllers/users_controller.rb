@@ -48,7 +48,7 @@ class UsersController < ApplicationController
     if @user.nil?
       json = { nothing: "" }.to_json
       jsonp = params[:callback] + "(" + json + ")"
-      render :text => jsonp, :status => :unauthorized
+      render :text => jsonp, :content_type => "text/javascript"#, :status => :unauthorized
     else
       # answer as JSON with Padding (cross domain)
       json = @user.to_json

@@ -2,7 +2,6 @@
 
   jQuery = undefined
   user = undefined
-  login_checks = 10
   checking = undefined
   debugger_mode = true
 
@@ -56,24 +55,24 @@
 
   setUserCookies = (user) ->
     # sets user login data on cookies
-    if user is undefined or user is null
-      docCookies.removeItem("egamify_u")
-      docCookies.removeItem("egamify_t")
+    if user is undefined or user is null or user.id is undefined
+      docCookies.removeItem("egamify_u", "/")
+      docCookies.removeItem("egamify_t", "/")
     else
-      docCookies.setItem("egamify_u", user.id, Infinity)
-      docCookies.setItem("egamify_t", user.s_token, Infinity)
+      docCookies.setItem("egamify_u", user.id, Infinity, "/")
+      docCookies.setItem("egamify_t", user.s_token, Infinity, "/")
     log "Main_bar: User login cookie set"
 
 
   updateUserStatus = (logued_user) ->
     # updates user status on widged main bar
-    if logued_user isnt undefined or logued_user isnt null or logued_user.name is undefined
+    if logued_user isnt undefined and logued_user isnt null and logued_user.name isnt undefined
       jQuery("#e-gamify-status").html logued_user.name + " logueado!!!"
       jQuery("#e-gamify-status").append "<img src='https://graph.facebook.com/" +
         logued_user.fb_id + "/picture'>"
       log "Main_bar: user LOGUED IN"
     else
-      jQuery("#e-gamify-status").html "<div id='fb-bt'>NO logueado</div>"
+      jQuery("#e-gamify-status").html "NO logueado"
       log "Main_bar: user NOT LOGUED IN"
 
 
@@ -86,41 +85,59 @@
       setUserCookies(data)
       if data isnt undefined and data.name isnt undefined
         log "Main_bar: user fetch finished, user set"
-        updateUserStatus(data)
         user = data
       else
         log "Main_bar: ERROR fetching user"
-        return null
+      updateUserStatus(data)
 
 
-  loadFBLoginScript = (shop_id) ->
-    # loads FB login iframe and starts polling for logins
-    fb_login_token = loginToken()
-
-    fb_login_iframe_html = "<iframe src='http://localhost:3000/widgets/fb_login?s=" +
-      shop_id + "&fb_lt=" + fb_login_token + "'></iframe>"
-    jQuery("#e-gamify-main-bar").append fb_login_iframe_html
-    log "Main_bar: Loading FB_login script..."
-
-    # crossdomain check fb login status each 2 seconds for 20 seconds long
+  pollFBLoginStatus = (login_checks, freq_time, shop_id, fb_login_token) ->
+    # crossdomain check fb login status each freq_time period for login_checks iterations
     jsonp_url = "http://localhost:3000/widgets/fb_check?s=" + shop_id +
       "&fb_lt=" + fb_login_token + "&callback=?"
     checking = setInterval () ->
       if (login_checks < 0 or (user isnt undefined and user.id isnt undefined))
         clearInterval checking
+        setUserCookies(user)
+        updateUserStatus(user)
       else
         login_checks--
         log "Main_bar: polling FB login status..."
         jQuery.getJSON jsonp_url, (data) ->
-          setUserCookies(data)
           if data isnt undefined and data.name isnt undefined
             log "Main_bar: FB login finished, user set"
-            updateUserStatus(data)
             user = data
           else
             log "Main_bar: ERROR: fetching FB login failed"
-            return null
-    , 2500
+            user = undefined
+    , freq_time
+
+
+  turnOnFBClickjacking = (shop_id, fb_login_token) ->
+    # activates a polling for FB login when FB button on iframe is clicked
+    myConfObj = iframeMouseOver: false
+    window.addEventListener "blur", ->
+      if myConfObj.iframeMouseOver
+        log "Main_bar: FB Login Button clicked"
+        window.setTimeout(pollFBLoginStatus(30, 2000, shop_id, fb_login_token), 1000)
+
+    document.getElementById("e-gamify-fb-login").addEventListener "mouseover", ->
+      myConfObj.iframeMouseOver = true
+
+    document.getElementById("e-gamify-fb-login").addEventListener "mouseout", ->
+      myConfObj.iframeMouseOver = false
+
+
+  loadFBLoginScript = (shop_id) ->
+    # loads FB login iframe and starts polling for logins
+    fb_login_token = loginToken()
+    fb_login_iframe_html = "<iframe id='e-gamify-fb-login' logued='no' src='http://localhost:3000/widgets/fb_login?s=" +
+      shop_id + "&fb_lt=" + fb_login_token + "' frameborder='0' scrolling='no'></iframe>"
+    jQuery("#e-gamify-main-bar").append fb_login_iframe_html
+    log "Main_bar: Loading FB_login script..."
+
+    turnOnFBClickjacking(shop_id, fb_login_token)
+    pollFBLoginStatus(5, 1000, shop_id, fb_login_token)
 
 
   scriptLoadHandler = ->
@@ -156,12 +173,6 @@
         log "Main_bar: user cookie present"
         fetchUser(shop_id, user_cookie.user_id, user_cookie.s_token)
 
-
-
-      $("#fb-bt").click ->
-        ## ABRIMOS VENTANA MODAL CON IFRAME fb api y .login del tiron
-        ## seguido de otro periodo de checkeo, esta vez mas largo (o con campo de check)
-        alert "FB button"
 
 
   if window.jQuery is `undefined` or window.jQuery.fn.jquery isnt ("1.9.1" or "1.9.0" or

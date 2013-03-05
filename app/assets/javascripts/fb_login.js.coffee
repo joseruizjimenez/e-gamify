@@ -1,75 +1,72 @@
 (->
 
+  fb_app_id = "451013134972296"
+  fb_login_token = undefined
+  shop_id = undefined
   debugger_mode = true
 
 
-  log = (msg)->
+  log = (msg) ->
     if debugger_mode
       console.log msg
 
 
+  postUser = (expires_in, access_token) ->
+    FB.api "/me", (res) ->
+      user = {
+        "name" : res.name,
+        "email" : res.email,
+        "fb_id" : res.id,
+        "fb_expires_at" : expires_in,
+        "fb_login_token" : fb_login_token,
+        "fb_access_token" : access_token
+      }
+      req = jQuery.ajax
+        url: "http://localhost:3000/shops/" + shop_id + "/users/"
+        type: "POST"
+        data: JSON.stringify(user)
+        contentType: 'application/json'
+        dataType: "json"
+      req.done (msg) ->
+        log "FB: User posted to the server"
+      req.fail (jqXHR, textStatus) ->
+        log "FB: post fallido: " + textStatus
+
+
+  checkUserStatus = ->
+    FB.getLoginStatus (response) ->
+      if response.status is "connected"
+        log "FB: user connected"
+        postUser response.authResponse.expiresIn, response.authResponse.accessToken
+      else if response.status is "not_authorized"
+        log "FB: user not authorized"
+      else
+        log "FB: user not logued"
+
+
   login = ->
     FB.login ((response) ->
-      if response.authResponse
-        # connected
-        FB.api "/me", (response) ->
-          alert "hola " + response.email
-      else
-        alert "nada"
-    ),
-      scope: "email"
+      checkUserStatus() if response.authResponse
+    ), scope: "email"
 
 
   window.fbAsyncInit = ->
     FB.init
-      appId: "451013134972296"
+      appId: fb_app_id
       channelUrl: "//localhost:3000/channel.html"
       status: true
       cookie: true
       xfbml: true
 
-    log "FB: Checking login status..."
-    FB.getLoginStatus (response) ->
-      # SI ESTA LOGUEADO Y AUTORIZADO
-      jQuery(document).ready ($) ->
-        $("#fb-bt").click ->
-          login()
+    jQuery(document).ready ($) ->
+      shop_id = $("#e-gamify-login").attr("s")
+      fb_login_token = $("#e-gamify-login").attr("fb_lt")
+      $("#e-gamify-fb-bt").click ->
+        login()
 
-        if response.status is "connected"
-          s = $("#e-gamify-login").attr("s")
-          fb_login_token = $("#e-gamify-login").attr("fb_lt")
+      log "FB: Checking login status..."
+      checkUserStatus()
 
-          FB.api "/me", (res) ->
-            user = {
-              "name" : res.name,
-              "email" : res.email,
-              "fb_id" : res.id,
-              "fb_expires_at" : response.authResponse.expiresIn,
-              "fb_login_token" : fb_login_token,
-              "fb_access_token" : response.authResponse.accessToken
-            }
-            req = $.ajax
-              url: "http://localhost:3000/shops/"+s+"/users/"
-              type: "POST"
-              data: JSON.stringify(user)
-              contentType: 'application/json'
-              dataType: "json"
-
-            req.done (msg) ->
-              # user POST OK
-
-            req.fail (jqXHR, textStatus) ->
-              log "post fallido: " + textStatus
-
-          log "FB: user connected"
-
-        # SINO...
-        else if response.status is "not_authorized"
-          #login()
-          log "FB: user not authorized"
-        else
-          #login()
-          log "FB: user not logued"
 
 
   # Load the SDK Asynchronously
