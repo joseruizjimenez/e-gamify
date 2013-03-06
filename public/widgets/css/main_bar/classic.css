@@ -1,14 +1,56 @@
 #e-gamify-main-bar {
-  background-color: gray;
+  background-color: rgba(179, 255, 249, 0.89);
   position:fixed !important;
   position: absolute; /*ie6 */
   right: 1em;
   bottom: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 1.3em;
+  border-color: rgb(50, 180, 255);
+  border-style: solid;
+  border-width: 0.15em;
+  margin: 0;
+  padding: 0;
+  /*display: none;*/
 }
 
 #e-gamify-main-bar iframe {
+  width: 70px;
+  height: 70px;
   /*display: none;
   visibility: hidden;*/
+}
+
+#e-gamify-iframe {
+  position: relative;
+  float: right;
+  margin: 7px;
+}
+
+#e-gamify-status {
+  position: relative;
+  float: left;
+  margin: 6px;
+}
+
+#e-gamify-name {
+  position: relative;
+  float: right;
+  margin: 6px;
+}
+
+#e-gamify-avatar {
+  position: relative;
+  float: right;
+  margin: 7px;
+}
+
+#e-gamify-points {
+  position: relative;
+  float: left;
+  margin: 6px;
+  font-family: 'Ubuntu', sans-serif;
 }
 
 #fb-bt {

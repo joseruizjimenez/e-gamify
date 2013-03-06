@@ -39,8 +39,10 @@
         log "FB: user connected"
         postUser response.authResponse.expiresIn, response.authResponse.accessToken
       else if response.status is "not_authorized"
+        $("#e-gamify-fb-bt").html "<img src='http://localhost:3000/widgets/img/fb_login.png'></img>"
         log "FB: user not authorized"
       else
+        $("#e-gamify-fb-bt").html "<img src='http://localhost:3000/widgets/img/fb_login.png'></img>"
         log "FB: user not logued"
 
 
@@ -59,8 +61,8 @@
       xfbml: true
 
     jQuery(document).ready ($) ->
-      shop_id = $("#e-gamify-login").attr("s")
-      fb_login_token = $("#e-gamify-login").attr("fb_lt")
+      shop_id = $("#e-gamify-fb-login-token").attr("s")
+      fb_login_token = $("#e-gamify-fb-login-token").attr("fb_lt")
       $("#e-gamify-fb-bt").click ->
         login()
 
@@ -79,7 +81,7 @@
     js = d.createElement("script")
     js.id = id
     js.async = true
-    js.src = "http://connect.facebook.net/en_US/all.js"
+    js.src = "https://connect.facebook.net/es_ES/all.js"
     ref.parentNode.insertBefore js, ref
   ) document
 
