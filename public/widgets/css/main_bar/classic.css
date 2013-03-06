@@ -2,7 +2,7 @@
   background-color: rgba(179, 255, 249, 0.89);
   position:fixed !important;
   position: absolute; /*ie6 */
-  right: 1em;
+  right: 0.5em;
   bottom: 0;
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
@@ -25,34 +25,48 @@
 #e-gamify-iframe {
   position: relative;
   float: right;
-  margin: 7px;
+  margin: 0.3em;
+  margin-bottom: 0.1em;
 }
 
 #e-gamify-status {
   position: relative;
   float: left;
-  margin: 6px;
+  margin: 0.35em;
+  color: #344D9D;
 }
 
 #e-gamify-name {
   position: relative;
-  float: right;
-  margin: 6px;
+  float: left;
+  margin: 0.35em;
 }
 
 #e-gamify-avatar {
   position: relative;
   float: right;
-  margin: 7px;
+  margin: 0.45em;
 }
 
 #e-gamify-points {
   position: relative;
   float: left;
-  margin: 6px;
+  margin: 0.35em;
   font-family: 'Ubuntu', sans-serif;
 }
 
-#fb-bt {
-  color: red;
+#e-gamify-ep {
+  float: left;
+  margin-right: 0.2em;
+}
+
+#e-gamify-p {
+  float: right;
+  color: #2CE629;
+}
+
+#e-gamify-powered {
+  font-style: italic;
+  font-size: x-small;
+  position: absolute;
 }

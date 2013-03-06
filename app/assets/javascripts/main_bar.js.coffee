@@ -7,9 +7,9 @@
   debugger_mode = true
 
   blank_state_html = "<div id='e-gamify-user-wrap' style='display: none;'>
+                        <div id='e-gamify-name'></div>
                         <div id='e-gamify-points'></div>
                         <div id='e-gamify-avatar'></div>
-                        <div id='e-gamify-name'></div>
                       </div>
                       <div id='e-gamify-iframe' style='display: none;'></div>
                       <div id='e-gamify-status'><img src='http://localhost:3000/widgets/img/ajax-loader.gif'></img></div>
@@ -74,23 +74,58 @@
     log "Main_bar: User login cookie set"
 
 
+  updateStatusMsg = (msg) ->
+    s = $("#e-gamify-status")
+    s.fadeOut 'fast', () ->
+      s.css('color', '#3874FF')
+      s.html(msg).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).fadeOut(500)
+      setTimeout () ->
+        s.css('color', '#344D9D').fadeIn(500)
+      , 2500
+
+
+  updatePointsAnimation = (points, msg) ->
+    p = $("#e-gamify-p")
+    updateStatusMsg msg
+    p.fadeOut 'fast', () ->
+      p.css('color', '#81FF38').html("+ " + points).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).fadeOut(500)
+      setTimeout () ->
+        p.css('color', '#2CE629').html(user.points).fadeIn(500)
+      , 2500
+
+
+  redeemVisitPoints = (user) ->
+    unless user.new_points is undefined or user.new_points is null
+      setTimeout () ->
+        updatePointsAnimation user.new_points, user.new_points_msg
+      , 500
+
+
   updateUserStatus = (logued_user) ->
     # updates user status on widged main bar
     $("#e-gamify-main-bar").hide().delay(400)
     if logued_user isnt undefined and logued_user isnt null and logued_user.name isnt undefined
+      $("#e-gamify-main-bar").css 'width', '32%'
+      $("#e-gamify-status").css 'color', '#344D9D'
       $("#e-gamify-iframe").hide()
-      $("#e-gamify-status").html "logueado!"
-      $("#e-gamify-name").html logued_user.name
-      $("#e-gamify-points").html logued_user.points
+      $("#e-gamify-status").html "logued in!"
+      $("#e-gamify-name").html "Hi, " + logued_user.name + "!"
+      $("#e-gamify-points").html "<div id='e-gamify-ep'>Earned points: </div><div id='e-gamify-p'>" + logued_user.points + "</div>"
       $("#e-gamify-avatar").html "<img src='https://graph.facebook.com/" +
         logued_user.fb_id + "/picture'>"
       $("#e-gamify-user-wrap").show()
       log "Main_bar: user LOGUED IN"
+      redeemVisitPoints(logued_user)
     else
-      $("#e-gamify-status").html "NO logueado"
+      $("#e-gamify-main-bar").css 'width', ''
+      $("#e-gamify-status").css 'color', '#333333'
+      login_html = "<p>Welcome to "+ logued_user.shop_name +
+                   "!</p><p>Login and start <b>collecting points</b>!</p>
+                    <div id=e-gamify-powered>Powered by: <a href='http://www.e-gamify.com'>e-gamify.com</a>"
+      $("#e-gamify-status").html login_html
       $("#e-gamify-user-wrap").hide()
-      #$("#e-gamify-fb-login").removeAttr('style')
       $("#e-gamify-iframe").show()
+      user = undefined
       log "Main_bar: user NOT LOGUED IN"
     $("#e-gamify-main-bar").fadeIn('slow')
 
@@ -128,7 +163,7 @@
             user = data
           else
             log "Main_bar: ERROR: fetching FB login failed"
-            user = undefined
+            user = data
     , freq_time
 
 
@@ -148,7 +183,6 @@
 
 
   autoResizeIframe = (id) ->
-    log "RESIZEEE"
     newheight = undefined
     newwidth = undefined
     if document.getElementById
@@ -165,11 +199,11 @@
       shop_id + "&fb_lt=" + fb_login_token + "' width='100%' height='200px' frameborder='0' scrolling='no'></iframe>"
     $("#e-gamify-iframe").append fb_login_iframe_html
     log "Main_bar: Loading FB_login script..."
-    $("#e-gamify-fb-login").change () ->
-      autoResizeIframe(id)
+    $("#e-gamify-fb-login").ready () ->
+      autoResizeIframe("e-gamify-fb-login")
 
     turnOnFBClickjacking(shop_id, fb_login_token)
-    pollFBLoginStatus(5, 1000, shop_id, fb_login_token)
+    pollFBLoginStatus(4, 500, shop_id, fb_login_token)
 
 
   scriptLoadHandler = ->

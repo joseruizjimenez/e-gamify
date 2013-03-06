@@ -8,7 +8,12 @@ class WidgetsController < ApplicationController
   def fb_check
     @user = User.first({'shop_id' => params[:s], 'fb_login_token' => params[:fb_lt]})
     if @user.nil?
-      json = { nothing: "" }.to_json
+      @shop = Shop.find params[:s]
+      unless @shop.nil?
+        json = { shop_name: @shop.name }.to_json
+      else
+        json = { shop_name: "e-gamify" }.to_json
+      end
     else
       json = @user.to_json
     end

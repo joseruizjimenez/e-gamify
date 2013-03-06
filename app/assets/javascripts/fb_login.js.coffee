@@ -39,10 +39,10 @@
         log "FB: user connected"
         postUser response.authResponse.expiresIn, response.authResponse.accessToken
       else if response.status is "not_authorized"
-        $("#e-gamify-fb-bt").html "<img src='http://localhost:3000/widgets/img/fb_login.png'></img>"
+        $("#e-gamify-fb-bt").html "<a href='#'><img src='http://localhost:3000/widgets/img/fb_login.png'></img></a>"
         log "FB: user not authorized"
       else
-        $("#e-gamify-fb-bt").html "<img src='http://localhost:3000/widgets/img/fb_login.png'></img>"
+        $("#e-gamify-fb-bt").html "<a href='#'><img src='http://localhost:3000/widgets/img/fb_login.png'></img></a>"
         log "FB: user not logued"
 
 

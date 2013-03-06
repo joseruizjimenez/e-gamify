@@ -29,9 +29,7 @@ class UsersController < ApplicationController
         :fb_access_token => params[:fb_access_token],
         :fb_login_token => params[:fb_login_token],
         :logued => true,
-        :s_token => Base64.encode64(UUIDTools::UUID.random_create)[0..11],
-        :pages_visited => @user[:pages_visited] + 1,
-        :logins => @user[:logins] + 1
+        :s_token => Base64.encode64(UUIDTools::UUID.random_create)[0..11]
       )
     end
 
@@ -50,6 +48,27 @@ class UsersController < ApplicationController
       jsonp = params[:callback] + "(" + json + ")"
       render :text => jsonp, :content_type => "text/javascript"#, :status => :unauthorized
     else
+      # account create points
+      if @user.total_points == 0
+        @user[:points] = 15
+        @user[:total_points] = 15
+        @user.save!
+        @user[:new_points] = 15
+        @user[:new_points_msg] = "Just won 15 points with your first login!"
+      # daily visit points
+      elsif @user.updated_at + 1.day < Time.now
+        @user[:points] = @user[:points] + 1
+        @user[:total_points] = @user[:total_points] + 1
+        @user[:pages_visited] = @user[:pages_visited] + 1
+        @user[:logins] = @user[:logins] + 1
+        @user.save!
+        @user[:new_points] = 1
+        @user[:new_points_msg] = "Just won 1 point with daily visit!"
+      else
+        @user[:pages_visited] = @user[:pages_visited] + 1
+        @user[:logins] = @user[:logins] + 1
+        @user.save!
+      end
       # answer as JSON with Padding (cross domain)
       json = @user.to_json
       callback = params[:callback]
