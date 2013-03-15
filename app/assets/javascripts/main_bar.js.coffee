@@ -88,9 +88,9 @@
     p = $("#e-gamify-p")
     updateStatusMsg msg
     p.fadeOut 'fast', () ->
-      p.css('color', '#81FF38').html("+ " + points).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).fadeOut(500)
+      p.css('color', '#00EB10').html("+ " + points).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).fadeOut(500)
       setTimeout () ->
-        p.css('color', '#2CE629').html(user.points).fadeIn(500)
+        p.css('color', '#20D31D').html(user.points).fadeIn(500)
       , 2500
 
 
@@ -140,9 +140,10 @@
       if data isnt undefined and data.name isnt undefined
         log "Main_bar: user fetch finished, user set"
         user = data
+        updateUserStatus(data)
       else
-        log "Main_bar: ERROR fetching user"
-      updateUserStatus(data)
+        log "Main_bar: ERROR fetching user. Loading FB script"
+        loadFBLoginScript(shop_id)
 
 
   pollFBLoginStatus = (login_checks, freq_time, shop_id, fb_login_token) ->
@@ -230,7 +231,6 @@
       log "Main_bar: CSS and font links loaded"
 
       # load html spash screen
-      #$("#e-gamify-main-bar").html "<div id='e-gamify-status'>comprobando...</div>"
       $("#e-gamify-main-bar").html blank_state_html
       $("#e-gamify-main-bar").slideDown()#.fadeIn(800)
 

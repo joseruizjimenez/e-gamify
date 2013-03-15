@@ -9,6 +9,8 @@ class ShopsController < ApplicationController
     join_reward = {
       name: "Welcome!",
       info: "Now you can start getting rewards!",
+      add_points: 15,
+      add_msg: "Just won 15 points with your first login!",
       cost: 0,
       img_uri: "/img/rewards/join.png",
       activate_at: Time.now

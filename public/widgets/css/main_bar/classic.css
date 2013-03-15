@@ -3,7 +3,7 @@
   position:fixed !important;
   position: absolute; /*ie6 */
   right: 0.5em;
-  bottom: 0;
+  bottom: 0.2em;
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 1.3em;
@@ -62,7 +62,7 @@
 
 #e-gamify-p {
   float: right;
-  color: #2CE629;
+  color: #20D31D;
 }
 
 #e-gamify-powered {

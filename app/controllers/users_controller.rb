@@ -13,9 +13,6 @@ class UsersController < ApplicationController
     if @user.nil?
       shop = Shop.find(params[:shop_id])
       @user = User.new(params[:user])
-      join_reward = (shop.rewards.each { |r| r.name == "Welcome!" })[0]
-      join_reward[:redeemed] = join_reward[:redeemed] + 1
-      @user.reward_ids.push(join_reward.id)
       @user[:logued] = true
       @user[:s_token] = Base64.encode64(UUIDTools::UUID.random_create)[0..11]
       shop.users.push(@user)
@@ -29,6 +26,7 @@ class UsersController < ApplicationController
         :fb_access_token => params[:fb_access_token],
         :fb_login_token => params[:fb_login_token],
         :logued => true,
+        :logins => @user[:logins] + 1,
         :s_token => Base64.encode64(UUIDTools::UUID.random_create)[0..11]
       )
     end
@@ -48,28 +46,23 @@ class UsersController < ApplicationController
       jsonp = params[:callback] + "(" + json + ")"
       render :text => jsonp, :content_type => "text/javascript"#, :status => :unauthorized
     else
-      # account create points
+      # new account points
       if @user.total_points == 0
-        @user[:points] = 15
-        @user[:total_points] = 15
-        @user.save!
-        @user[:new_points] = 15
-        @user[:new_points_msg] = "Just won 15 points with your first login!"
+        shop = Shop.find(params[:shop_id])
+        welcome_reward = (shop.rewards.each { |r| r.name == "Welcome!" })[0]
+        @user.redeem_reward_points welcome_reward
+        @user[:new_points] = welcome_reward.add_points
+        @user[:new_points_msg] = welcome_reward.add_msg
       # daily visit points
       elsif @user.updated_at + 1.day < Time.now
-        @user[:points] = @user[:points] + 1
-        @user[:total_points] = @user[:total_points] + 1
-        @user[:pages_visited] = @user[:pages_visited] + 1
-        @user[:logins] = @user[:logins] + 1
-        @user.save!
+        @user.redeem_daily_visit_point
         @user[:new_points] = 1
         @user[:new_points_msg] = "Just won 1 point with daily visit!"
       else
-        @user[:pages_visited] = @user[:pages_visited] + 1
-        @user[:logins] = @user[:logins] + 1
+        @user[:pages_visited] += 1
         @user.save!
       end
-      # answer as JSON with Padding (cross domain)
+      # answer as JSON with Padding (cross domain request)
       json = @user.to_json
       callback = params[:callback]
       jsonp = callback + "(" + json + ")"
