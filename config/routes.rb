@@ -19,9 +19,11 @@ EGamify::Application.routes.draw do
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
-  resources :rewards
   resources :shops do
-    resources :users
+    resources :users do
+      get 'logout'
+    end
+    resources :rewards
   end
 
   # Sample resource route with options:

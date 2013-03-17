@@ -7,14 +7,14 @@ class WidgetsController < ApplicationController
 
   def fb_check
     @user = User.first({'shop_id' => params[:s], 'fb_login_token' => params[:fb_lt]})
-    @shop = Shop.find params[:s]
+    shop = Shop.find params[:s]
     json = { shop_name: "e-gamify" }.to_json
     if @user.nil?
-      json = { shop_name: @shop.name }.to_json unless @shop.nil?
+      json = { shop_name: shop.name }.to_json unless shop.nil?
     else
       # new account points
       if @user.total_points == 0
-        welcome_reward = (@shop.rewards.each { |r| r.name == "Welcome!" })[0]
+        welcome_reward = (shop.rewards.each { |r| r.name == "Welcome!" })[0]
         @user.redeem_reward_points welcome_reward
         @user[:new_points] = welcome_reward.add_points
         @user[:new_points_msg] = welcome_reward.add_msg
@@ -27,6 +27,7 @@ class WidgetsController < ApplicationController
         @user[:pages_visited] += 1
         @user.save!
       end
+      @user[:shop_name] = shop.name
       json = @user.to_json
     end
 

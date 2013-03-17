@@ -42,6 +42,7 @@ class UsersController < ApplicationController
   def show
     @user = User.verify params[:shop_id], params[:id], params[:s_token]
     if @user.nil?
+      params[:callback] ||= ""
       json = { nothing: "" }.to_json
       jsonp = params[:callback] + "(" + json + ")"
       render :text => jsonp, :content_type => "text/javascript"#, :status => :unauthorized
@@ -64,24 +65,33 @@ class UsersController < ApplicationController
       end
       # answer as JSON with Padding (cross domain request)
       json = @user.to_json
-      callback = params[:callback]
-      jsonp = callback + "(" + json + ")"
+      params[:callback] ||= ""
+      jsonp = params[:callback] + "(" + json + ")"
       respond_to do |format|
-        # format.html
         # format.xml  { render :xml => @user }
         # format.json { render :json => @user }
         format.text { render :text => jsonp, :content_type => "text/javascript" }
+        format.html
       end
     end
   end
 
 
-  def update
+  def logout
     # Logouts the user, he must know the right token
     User.set( {'id' => params[:user_id],
       'shop_id' => params[:shop_id],
       's_token' => params[:s_token]}, {
       'logued' => false } )
+    json = { ok: "true" }.to_json
+    jsonp = params[:callback] + "(" + json + ")"
+    respond_to do |format|
+      format.text { render :text => jsonp, :content_type => "text/javascript" }
+    end
+  end
+
+
+  def update
   end
 
 
