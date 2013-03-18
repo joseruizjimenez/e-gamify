@@ -1,18 +1,18 @@
 ## About this project
-Anotar is a taking note Ruby on Rails web app
+E-gamify is gamification plataform for e-commerces, allowing an easy integration through javascript widgets
 
 We want:
-  - A fast web app
-  - Liquid templates to show a simple and beautiful interface on any device (Bootstrap)
-  - Zero learning curve
+  - An easy integration with existing online shops (specially for those made through services like shopify.com or 1and1.com)
+  - Non programmers can use the service just placing HTML tags on the right web pages templates (all services mentioned above let you do that)
+  - It should raise customer's actions and build a community around the shop with the final goal of increasing the salles
 
 To do:
-  - Add AJAX index showing new notes
-  - Finish all the features and specs tests
-  - Add complex search logic
-  - Add Javascript note's text styling in client, not in server
+  - Add quest/goals graph: editor for admins and badges system for customers.
+  - Add a widgets catalog with docs, plus a few more widgets.
+  - Rewards and coupons redeem plataform and admin's equivalent
+  - Analitics dashboard
 
-Note: Admins console at /admins/console (Must be logged as an admin = true User)
+Note: Main module and public API are still under develpment.
 
 Have fun :)
 
@@ -31,10 +31,11 @@ If you want to deploy it under a production environment, you need to set the fol
   - GMAIL_USERNAME (with a gmail account for the app to use)
   - GMAIL_PASSWORD (the gmail password)
   - SECRET_TOKEN (with the app secret token, generate one with 'rake secret')
+  - MONGODB_URI (database should should be named 'e_gamify')
+  - MONGO_USERNAME (mongodb username)
+  - MONGO_PASSWORD (mongodb pass)
 
 ## Copyright and license
-Copyright 2012 Anotar.me
-
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with the License. You may obtain a copy of the License in the LICENSE file, or at:
 
 http://www.apache.org/licenses/LICENSE-2.0
