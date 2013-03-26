@@ -55,7 +55,7 @@ class UsersController < ApplicationController
         @user[:new_points] = welcome_reward.add_points
         @user[:new_points_msg] = welcome_reward.add_msg
       # daily visit points
-      elsif @user.updated_at + 1.day < Time.now
+      elsif @user.visited_at + 1.day < Time.now
         @user.redeem_daily_visit_point
         @user[:new_points] = 1
         @user[:new_points_msg] = "Just won 1 point with daily visit!"

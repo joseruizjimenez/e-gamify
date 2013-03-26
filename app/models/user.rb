@@ -27,6 +27,7 @@ class User
   key :shares_count, Integer, :default => 0
   key :pages_visited, Integer, :default => 1
   key :logins, Integer, :default => 1
+  key :visited_at, Time
   key :reward_ids, Array
   timestamps!
 
@@ -53,7 +54,8 @@ class User
     self.total_points += 1
     self.pages_visited += 1
     self.logins += 1
-    @user.save!
+    self.visited_at = Time.now
+    self.save!
   end
 
 end
