@@ -3,6 +3,9 @@ class Reward
 
   key :name, String, :required => true
   key :info, String
+  key :init, Boolean, :default => false
+  key :redeem_hits, Array, :default => [0]
+  key :repeatable, Boolean, :default => false
   key :cost, Integer
   key :add_points, Integer, :default => 0
   key :add_msg, String

@@ -6,6 +6,7 @@ class Shop
   key :uri, String
   key :language, String
   key :widgets, Array
+  # add timed rewards...
   timestamps!
 
   belongs_to :site_owner

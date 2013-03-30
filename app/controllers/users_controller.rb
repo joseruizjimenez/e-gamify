@@ -15,10 +15,10 @@ class UsersController < ApplicationController
       @user = User.new(params[:user])
       @user[:logued] = true
       @user[:s_token] = Base64.encode64(UUIDTools::UUID.random_create)[0..11]
+      @user[:visited_at] = Time.now
+      @user.add_init_rewards shop
       shop.users.push(@user)
       shop.save!
-      # Shop.set({'id' => params[:shop_id], 'rewards.id' => join_reward.id},
-      #   {'rewards.$.redeemed' => join_reward.redeemed + 1})
     else
       @user.update_attributes(
         :name => params[:name],
@@ -50,10 +50,8 @@ class UsersController < ApplicationController
       # new account points
       if @user.total_points == 0
         shop = Shop.find(params[:shop_id])
-        welcome_reward = (shop.rewards.each { |r| r.name == "Welcome!" })[0]
-        @user.redeem_reward_points welcome_reward
-        @user[:new_points] = welcome_reward.add_points
-        @user[:new_points_msg] = welcome_reward.add_msg
+        welcome_reward = (shop.rewards.select { |r| r.name == "Welcome!" })[0]
+        @user[:new_points], @user[:new_points_msg] = @user.redeem_reward_points welcome_reward
       # daily visit points
       elsif @user.visited_at + 1.day < Time.now
         @user.redeem_daily_visit_point
@@ -68,8 +66,6 @@ class UsersController < ApplicationController
       params[:callback] ||= ""
       jsonp = params[:callback] + "(" + json + ")"
       respond_to do |format|
-        # format.xml  { render :xml => @user }
-        # format.json { render :json => @user }
         format.text { render :text => jsonp, :content_type => "text/javascript" }
         format.html
       end

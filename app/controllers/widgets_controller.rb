@@ -14,10 +14,8 @@ class WidgetsController < ApplicationController
     else
       # new account points
       if @user.total_points == 0
-        welcome_reward = (shop.rewards.each { |r| r.name == "Welcome!" })[0]
-        @user.redeem_reward_points welcome_reward
-        @user[:new_points] = welcome_reward.add_points
-        @user[:new_points_msg] = welcome_reward.add_msg
+        welcome_reward = (shop.rewards.select { |r| r.name == "Welcome!" })[0]
+        @user[:new_points], @user[:new_points_msg] = @user.redeem_reward_points welcome_reward
       # daily visit points
       elsif @user.updated_at + 1.day < Time.now
         @user.redeem_daily_visit_point

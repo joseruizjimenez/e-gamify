@@ -28,25 +28,15 @@ class User
   key :pages_visited, Integer, :default => 1
   key :logins, Integer, :default => 1
   key :visited_at, Time
-  key :reward_ids, Array
+  key :redeemed_rewards, Hash
+  key :reward_hits, Hash
   timestamps!
 
   belongs_to :shop
-  # many :rewards, :in => :reward_ids
+
 
   def self.verify(shop_id, user_id, s_token)
     return User.first({'shop_id' => shop_id, 'id' => user_id, 's_token' => s_token})
-  end
-
-  def redeem_reward_points(reward)
-    # TODO add transaction
-    self.reward_ids.push reward.id
-    self.total_points += reward.add_points
-    self.points += reward.add_points
-    if self.save!
-      reward.redeemed += 1
-      reward.save!
-    end
   end
 
   def redeem_daily_visit_point
@@ -56,6 +46,60 @@ class User
     self.logins += 1
     self.visited_at = Time.now
     self.save!
+  end
+
+  def add_init_rewards(shop)
+    shop.rewards.each { |r| self.reward_hits[r.id.to_s] = 0 if r.init }
+  end
+
+  def redeem_reward_points(reward)
+    if self.reward_hits[reward.id.to_s].nil?
+      self.reward_hits[reward.id.to_s] = 1
+    else
+      self.reward_hits[reward.id.to_s] += 1
+    end
+    redeemed = false
+    add_points = 0
+    add_msg = ''
+    if self.redeemed_rewards[reward.id.to_s].nil?
+      if self.reward_hits[reward.id.to_s] >= reward.redeem_hits[0]
+        self.redeemed_rewards[reward.id.to_s] = 1
+        redeemed = true
+      else
+        pts_left = reward.redeem_hits[0] - self.reward_hits[reward.id.to_s]
+        add_msg = 'Just ' + pts_left + ' more ' + reward.name + ' to get your points!'
+      end
+    elsif reward.repeatable
+      if self.reward_hits[reward.id.to_s] >= reward.redeem_hits[0]
+        self.reward_hits[reward.id.to_s] = 0
+        self.redeemed_rewards[reward.id.to_s] += 1
+        redeemed = true
+      else
+        pts_left = reward.redeem_hits[0] - self.reward_hits[reward.id.to_s]
+        add_msg = 'Just ' + pts_left + ' more ' + reward.name + ' to get your points!'
+      end
+    elsif reward.redeem_hits.size > self.redeemed_rewards[reward.id.to_s]
+      if self.reward_hits[reward.id.to_s] >= reward.redeem_hits[self.redeemed_rewards[reward.id.to_s]]
+        self.redeemed_rewards[reward.id.to_s] += 1
+        redeemed = true
+      else
+        pts_left = reward.redeem_hits[self.redeemed_rewards[reward.id.to_s]] - self.reward_hits[reward.id.to_s]
+        add_msg = 'Just ' + pts_left + ' more ' + reward.name + ' to get your points!'
+      end
+    end
+
+    if redeemed
+      self.total_points += reward.add_points
+      self.points += reward.add_points
+      add_points = reward.add_points
+      add_msg = reward.add_msg
+      if self.save!
+        reward.redeemed += 1
+        reward.save!
+      end
+    end
+
+    return add_points, add_msg
   end
 
 end

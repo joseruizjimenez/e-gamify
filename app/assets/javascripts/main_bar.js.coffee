@@ -117,13 +117,15 @@
 
 
   updatePointsAnimation = (points, msg) ->
-    p = $("#e-gamify-p")
-    updateStatusMsg msg
-    p.fadeOut 'fast', () ->
-      p.css('color', '#00EB10').html("+ " + points).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).fadeOut(500)
-      setTimeout () ->
-        p.css('color', '#20D31D').html(user.points).fadeIn(500)
-      , 2500
+    unless msg is undefined or msg is ''
+      updateStatusMsg msg
+    unless points is 0
+      p = $("#e-gamify-p")
+      p.fadeOut 'fast', () ->
+        p.css('color', '#00EB10').html("+ " + points).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).fadeOut(500)
+        setTimeout () ->
+          p.css('color', '#20D31D').html(user.points).fadeIn(500)
+        , 2500
 
 
   redeemPoints = (user) ->
