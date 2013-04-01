@@ -116,7 +116,7 @@
       , 2500
 
 
-  updatePointsAnimation = (points, msg) ->
+  updatePointsAnimation = (msg, points) ->
     unless msg is undefined or msg is ''
       updateStatusMsg msg
     unless points is 0
@@ -128,11 +128,46 @@
         , 2500
 
 
-  redeemPoints = (user) ->
+  headlineMarquee = (msg, points) ->
+    # Prints reward headlines on marquee, queuing them if needed with closure
+    if headlines is undefined
+      headlines = []
+    headlines.push((msg, points))
+    unless printing is on
+      printing = on
+      animation_finished = true
+      while headlines.length isnt 0
+        if animation_finished
+          animation_finished = false
+          m, p = headlines.shift()
+          updatePointsAnimation m, p
+          setTimeout () ->
+            animation_finished = true
+          , 3000
+
+
+  redeemReward = (reward_id) ->
+    # posts a reward to the server, redeeming it, then queue his headline
+
+
+  parseRewards = (shop_id) ->
+    $("div.e-gamify-reward").each () ->
+      reward_id = $(this).attr "reward_id"
+      redeemReward reward_id, shop_id
+
+
+  activateRewardButtons = (shop_id) ->
+    $("div.e-gamify-like").click ->
+      redeemReward "likes", shop_id
+    $("div.e-gamify-share").click ->
+      redeemReward "sharing", shop_id
+
+
+  redeemPoints = (user, shop_id) ->
     unless user.new_points is undefined or user.new_points is null
-      setTimeout () ->
-        updatePointsAnimation user.new_points, user.new_points_msg
-      , 500
+      headlineMarquee user.new_points_msg, user.new_points
+    activateRewardButtons shop_id
+    parseRewards shop_id
 
 
   logoutUser = (user, shop_id, s_token) ->
@@ -166,7 +201,7 @@
         logoutUser logued_user, shop_id, s_token
       $("#e-gamify-user-wrap").show()
       log "Main_bar: user LOGUED IN"
-      redeemPoints(logued_user)
+      redeemPoints logued_user, shop_id
     else
       $("#e-gamify-main-bar").css 'width', ''
       $("#e-gamify-status").css 'color', '#333333'
