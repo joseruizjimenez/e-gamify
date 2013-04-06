@@ -21,6 +21,7 @@ class ShopsController < ApplicationController
       info: "We like that you like it...",
       init: true,
       repeatable: true,
+      redeem_hits: [5],
       add_points: 1,
       add_msg: "Just won 1 point with your like!",
       cost: 0,

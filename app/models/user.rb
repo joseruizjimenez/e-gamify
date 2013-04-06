@@ -67,7 +67,7 @@ class User
         redeemed = true
       else
         pts_left = reward.redeem_hits[0] - self.reward_hits[reward.id.to_s]
-        add_msg = 'Just ' + pts_left + ' more ' + reward.name + ' to get your points!'
+        add_msg = 'Just ' + pts_left.to_s + ' more ' + reward.name + ' to get your points!'
       end
     elsif reward.repeatable
       if self.reward_hits[reward.id.to_s] >= reward.redeem_hits[0]
@@ -76,7 +76,7 @@ class User
         redeemed = true
       else
         pts_left = reward.redeem_hits[0] - self.reward_hits[reward.id.to_s]
-        add_msg = 'Just ' + pts_left + ' more ' + reward.name + ' to get your points!'
+        add_msg = 'Just ' + pts_left.to_s + ' more ' + reward.name + ' to get your points!'
       end
     elsif reward.redeem_hits.size > self.redeemed_rewards[reward.id.to_s]
       if self.reward_hits[reward.id.to_s] >= reward.redeem_hits[self.redeemed_rewards[reward.id.to_s]]
@@ -84,8 +84,15 @@ class User
         redeemed = true
       else
         pts_left = reward.redeem_hits[self.redeemed_rewards[reward.id.to_s]] - self.reward_hits[reward.id.to_s]
-        add_msg = 'Just ' + pts_left + ' more ' + reward.name + ' to get your points!'
+        add_msg = 'Just ' + pts_left.to_s + ' more ' + reward.name + ' to get your points!'
       end
+    end
+
+    self.actions_count += 1
+    if reward.name == "likes"
+      self.likes_count += 1
+    elsif reward.name == "sharing"
+      self.shares_count += 1
     end
 
     if redeemed
@@ -93,7 +100,10 @@ class User
       self.points += reward.add_points
       add_points = reward.add_points
       add_msg = reward.add_msg
-      if self.save!
+    end
+
+    if self.save!
+      if redeemed
         reward.redeemed += 1
         reward.save!
       end

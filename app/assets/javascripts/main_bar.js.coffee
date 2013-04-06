@@ -6,6 +6,8 @@
   shop_name = undefined
   e_gamify_domain = "localhost:3000"
   checking = undefined
+  printing = off
+  headlines = []
   debugger_mode = true
 
   blank_state_html = "<div id='e-gamify-user-wrap' style='display: none;'>
@@ -130,44 +132,56 @@
 
   headlineMarquee = (msg, points) ->
     # Prints reward headlines on marquee, queuing them if needed with closure
-    if headlines is undefined
-      headlines = []
-    headlines.push((msg, points))
-    unless printing is on
+    if msg isnt undefined
+      headlines.push([msg, points])
+    unless printing is on and headlines.length isnt 0
       printing = on
-      animation_finished = true
-      while headlines.length isnt 0
-        if animation_finished
-          animation_finished = false
-          m, p = headlines.shift()
-          updatePointsAnimation m, p
-          setTimeout () ->
-            animation_finished = true
-          , 3000
+      headline = headlines.shift()
+      updatePointsAnimation headline[0], headline[1]
+      setTimeout () ->
+        printing = off
+        if headlines.length isnt 0
+          headlineMarquee undefined, undefined
+        else
+          # headlines = anuncios
+          # headlineMarquee undefined, undefined
+      , 3500
 
 
-  redeemReward = (reward_id) ->
+  redeemReward = (reward_id, shop_id, user_id, s_token) ->
     # posts a reward to the server, redeeming it, then queue his headline
+    log "Main_bar: Redeeming reward " + reward_id
+    jsonp_url = "http://"+e_gamify_domain+"/shops/"+shop_id+"/users/"+user_id+"/redeem/"+reward_id+"?s_token="+s_token+"&callback=?"
+    $.getJSON jsonp_url, (data) ->
+      if data isnt undefined and data.new_points isnt undefined
+        log "Main_bar: Reward "+reward_id+" redeemed ("+data.new_points_msg+"+"+data.new_points+"p)"
+        user = data
+        headlineMarquee data.new_points_msg, data.new_points
+      else
+        log "Main_bar: ERROR redeeming reward: " + reward_id
 
 
-  parseRewards = (shop_id) ->
+  parseRewards = (shop_id, user_id, s_token) ->
+    log "Main_bar: Parsing rewards..."
     $("div.e-gamify-reward").each () ->
-      reward_id = $(this).attr "reward_id"
-      redeemReward reward_id, shop_id
+      reward_id = $(this).attr "reward-id"
+      log "Main_bar: Reward " + reward_id + " found"
+      redeemReward reward_id, shop_id, user_id, s_token
 
 
-  activateRewardButtons = (shop_id) ->
-    $("div.e-gamify-like").click ->
-      redeemReward "likes", shop_id
-    $("div.e-gamify-share").click ->
-      redeemReward "sharing", shop_id
+  activateRewardButtons = (shop_id, user_id, s_token) ->
+    # it can be improved with a security token to validate these actions
+    $("div.e-gamify-social-btn").click ->
+      log "Main_bar: Social button pushed"
+      reward_id = $(this).attr "reward-id"
+      redeemReward reward_id, shop_id, user_id, s_token
 
 
   redeemPoints = (user, shop_id) ->
     unless user.new_points is undefined or user.new_points is null
       headlineMarquee user.new_points_msg, user.new_points
-    activateRewardButtons shop_id
-    parseRewards shop_id
+    activateRewardButtons shop_id, user.id, user.s_token
+    parseRewards shop_id, user.id, user.s_token
 
 
   logoutUser = (user, shop_id, s_token) ->

@@ -22,6 +22,7 @@ EGamify::Application.routes.draw do
   resources :shops do
     resources :users do
       get 'logout'
+      get 'redeem/:reward_id' => 'users#redeem'
     end
     resources :rewards
   end

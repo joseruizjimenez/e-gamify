@@ -87,6 +87,39 @@ class UsersController < ApplicationController
   end
 
 
+  def redeem
+    # redeem a given reward, checking if it leads to point increase
+    @user = User.verify params[:shop_id], params[:user_id], params[:s_token]
+    shop = Shop.find(params[:shop_id])
+    if @user.nil? or shop.nil?
+      params[:callback] ||= ""
+      json = { nothing: "" }.to_json
+      jsonp = params[:callback] + "(" + json + ")"
+      render :text => jsonp, :content_type => "text/javascript"#, :status => :unauthorized
+    else
+      reward = (shop.rewards.select { |r| r.id.to_s == params[:reward_id] })[0]
+
+      unless reward.nil?
+        @user[:new_points], @user[:new_points_msg] = @user.redeem_reward_points reward
+      else
+        params[:callback] ||= ""
+        json = { nothing: "" }.to_json
+        jsonp = params[:callback] + "(" + json + ")"
+        render :text => jsonp, :content_type => "text/javascript"#, :status => :unauthorized
+      end
+
+      # answer as JSON with Padding (cross domain request)
+      json = @user.to_json
+      params[:callback] ||= ""
+      jsonp = params[:callback] + "(" + json + ")"
+      respond_to do |format|
+        format.text { render :text => jsonp, :content_type => "text/javascript" }
+        format.html
+      end
+    end
+  end
+
+
   def update
   end
 
