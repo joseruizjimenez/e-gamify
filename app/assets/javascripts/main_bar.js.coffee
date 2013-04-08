@@ -191,6 +191,7 @@
       setUserCookies(data)
       if data isnt undefined and data.ok
         updateUserStatus undefined, undefined, undefined
+        loadFBLoginScript(shop_id)
         log "Main_bar: User logued out successfully"
 
 
@@ -270,7 +271,7 @@
     window.addEventListener "blur", ->
       if myConfObj.iframeMouseOver
         log "Main_bar: FB Login Button clicked"
-        window.setTimeout(pollFBLoginStatus(30, 2000, shop_id, fb_login_token), 1000)
+        window.setTimeout(pollFBLoginStatus(30, 700, shop_id, fb_login_token), 1000)
 
     document.getElementById("e-gamify-fb-login").addEventListener "mouseover", ->
       myConfObj.iframeMouseOver = true
@@ -292,7 +293,7 @@
   loadFBLoginScript = (shop_id) ->
     # loads FB login iframe and starts polling for logins
     fb_login_token = loginToken()
-    $("#e-gamify-iframe").append fBLoginIframeHTML shop_id, fb_login_token
+    $("#e-gamify-iframe").html fBLoginIframeHTML shop_id, fb_login_token
     log "Main_bar: Loading FB_login script..."
     $("#e-gamify-fb-login").ready () ->
       autoResizeIframe("e-gamify-fb-login")

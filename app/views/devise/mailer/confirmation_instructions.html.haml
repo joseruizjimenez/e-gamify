@@ -1,0 +1,5 @@
+%h2
+  eGamify.com
+%p Welcome #{@resource.username}!
+%p You can confirm your account email through the link below:
+%p= link_to 'Confirm my eGamify.com account', confirmation_url(@resource, :confirmation_token => @resource.confirmation_token)

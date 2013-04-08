@@ -1,4 +1,5 @@
 - content_for :head do
+  = render 'layouts/jquery_CDN'
   = javascript_include_tag "fb_login"
 
 #e-gamify-fb-login-token{ :s => params[:s], :fb_lt => params[:fb_lt] }

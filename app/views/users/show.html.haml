@@ -1,1 +1,35 @@
-%h2 SHOW USER!!
+%h2 Your profile on #{link_to @shop.name, @shop.uri}
+#user.well.well-large
+  %img#user-img.img-polaroid{ src: "https://graph.facebook.com/" + @user.fb_id + "/picture?type=large" }
+  #user-info
+    .name
+      .tag Name:
+      .field= @user.name
+    .email
+      .tag Email:
+      .field= @user.email
+    .current-points
+      .tag Current points:
+      .field= @user.points
+    .total-points
+      .tag Total points (current and already used):
+      .field= @user.total_points
+    .actions
+      .tag Actions made:
+      .field= @user.actions_count
+    %br
+    .field= link_to "Get coupons with points", "#"
+  #user-rewards
+    %ul.thumbnails
+      - @user.reward_hits.each do |reward_id, hits|
+        - r = (@shop.rewards.select { |r| r.id.to_s == reward_id })[0]
+        %li.span4
+          .thumbnail
+            %img.reward-img{src:r.img_uri,alt:r.name}
+            %h3= r.name
+            %p= r.info
+            %p Points rewarded: #{r.add_points}
+            .progress.progress-striped.active
+              .bar{style: "width: "+((hits*100+1)/(r.redeem_hits[0]+1)).to_s+"%"}
+  #redeemed-rewards
+  .field{style: "font-size: small; font-style: italic;"} Showing your latest rewards

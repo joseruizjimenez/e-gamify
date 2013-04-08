@@ -41,6 +41,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.verify params[:shop_id], params[:id], params[:s_token]
+    @shop = Shop.find params[:shop_id]
     if @user.nil?
       params[:callback] ||= ""
       json = { nothing: "" }.to_json
@@ -49,8 +50,7 @@ class UsersController < ApplicationController
     else
       # new account points
       if @user.total_points == 0
-        shop = Shop.find(params[:shop_id])
-        welcome_reward = (shop.rewards.select { |r| r.name == "Welcome!" })[0]
+        welcome_reward = (@shop.rewards.select { |r| r.name == "Welcome!" })[0]
         @user[:new_points], @user[:new_points_msg] = @user.redeem_reward_points welcome_reward
       # daily visit points
       elsif @user.visited_at + 1.day < Time.now

@@ -4,7 +4,7 @@ EGamify::Application.routes.draw do
   get "widgets/fb_login"
   get "widgets/fb_check"
 
-  devise_for :site_owners, :controllers => { :registrations => "registrations" }
+  devise_for :site_owners
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

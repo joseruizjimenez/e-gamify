@@ -7,6 +7,7 @@ gem 'haml'
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'uuidtools'
+gem 'simple_form'
 # Mongo ODM - mongo_mapper
 gem 'mongo_mapper'
 gem 'bson_ext'

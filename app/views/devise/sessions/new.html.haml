@@ -1,0 +1,11 @@
+%h2 Login
+= simple_form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+  .well
+    = f.input :email, :required => false, :autofocus => true
+    = f.input :password, :required => false
+    = f.input :remember_me, :label => false, :inline_label => "Remember me", :as => :boolean if devise_mapping.rememberable?
+    %button.btn.btn-primary{:name => "commit", :type => "submit"}
+      %b Login
+      to your account
+    -#= f.button :submit, "Login"
+= render "devise/shared/links"

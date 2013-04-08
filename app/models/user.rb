@@ -11,16 +11,6 @@ class User
   key :fb_expires_at, Integer
   key :points, Integer, :default => 0
   key :total_points, Integer, :default => 0
-  # simplificar todas las acciones en un hash de: {reward_id : contador_acciones, ...}
-  # pq los servicios de compras, likes, shares y pages visited seran ejemplos de
-  # como crear e insertar rewards. Te vendran por defecto y se pueden quitar.
-  # El main_bar checkea la pagina buscando tags de id: e-gamify-reward, y pilla su reward_id
-  # si hay varios, los encola: bucle que activa el siguiente tras pinchar el aceptar de la
-  # ventana modal. Onclick: procesa del array y elminina en accept.
-  # La presentacion de reward, si detecta que es reward tocho, crea además la vent. modal
-  # nota: hacer un reward copia de pages_visited pero no quitarlo.
-  # nota2: crear otro reward de fidelidad: tiempo registrado, 1 mes, 3 meses, 1 2 3 5 años.
-  #        este check se hace igual que en del punto diario.
   key :actions_count, Integer, :default => 0
   key :buys_count, Integer, :default => 0
   key :likes_count, Integer, :default => 0

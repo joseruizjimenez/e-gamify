@@ -1,12 +1,35 @@
 !!! 5
 %html
   %head
+    %meta{:charset => "utf-8"}
+    %meta{"http-equiv" => "X-UA-Compatible", :content => "IE=edge,chrome=1"}
+    %meta{:name => "viewport", :content => "width=device-width, initial-scale=1.0"}
+    %meta{:name => "description", :content => "EGamify is a gamification plataform for online shops"}
+    %meta{:name => "author", :content => "Jose Ruiz Jimenez - joseruizjimenez@gmail.com"}
     %title EGamify
-    = stylesheet_link_tag    "application", :media => "all"
-    = javascript_include_tag "application"
+    - if not params[:fb_lt]
+      = render 'layouts/egamify_head_content'
     = csrf_meta_tags
     = yield(:head)
 
   %body
-    = yield
+    - if not params[:fb_lt]
+      -# Navigation top bar (bootstrap)
+      %header.navbar.navbar-fixed-top
+        .navbar-inner
+          .container
+            = render 'layouts/navigation'
+
+      -# Main body container (bootstrap)
+      #main{:role => "main"}
+        .container-fluid
+          .content
+            .row-fluid
+              .span8.offset2
+                = yield
+    - else
+      = yield
+
+    - if not params[:fb_lt]
+      = render 'layouts/egamify_bottom_content'
     = yield(:bottom)

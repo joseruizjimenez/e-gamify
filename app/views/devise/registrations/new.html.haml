@@ -1,0 +1,14 @@
+%h2 Sign up
+= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
+  = f.error_notification
+  .well
+    = f.input :email, :autofocus => true, :placeholder => 'user@example.com', :required => false
+    = f.input :username, :placeholder => 'What should we call you?', :required => false
+    = f.input :password, :required => false
+    = f.input :password_confirmation, :required => false
+    %span.help-block= link_to('Terms of Service', '/legal/service.html') +" and "+ link_to('Privacy Policy', '/legal/privacy.html')
+    %button.btn.btn-primary{:name => "commit", :type => "submit"}
+      %b Sign up
+      with eGamify.com
+    -#= f.button :submit, "Sign up"
+= render "devise/shared/links"
