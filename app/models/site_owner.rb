@@ -31,6 +31,7 @@ class SiteOwner
   key :confirmation_token, String
   key :confirmed_at, Time
   key :confirmation_sent_at, Time
+  key :unconfirmed_email, String
 
   ## Token authenticatable
   key :authentication_token, String

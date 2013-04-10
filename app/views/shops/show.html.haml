@@ -1,0 +1,29 @@
+%h2 Manage your shop: #{link_to @shop.name, @shop.uri}
+#yellow.well.well-large
+  .tag-title Add this lines to your code and we will set everything for you:
+  %br
+  %br
+  %code &lt;script src="http://www.e-gamify.com/assets/main_bar.js" type="text/javascript"&gt;&lt;/script&gt;
+  %br
+  %br
+  %code &lt;div id="e-gamify-main-bar" shop="#{@shop.id}" theme="classic" style="display: none;"&gt;&lt;/div&gt;
+  %br
+  %br
+  %p
+    .tag-title Choose an option:
+  %p
+    .field-title= link_to "Reward's quests graph", shop_rewards_path(@shop)
+  %p
+    .field-title= link_to "Redeemable coupons", "#" # shop_coupons_path(@shop)
+  %p
+    .field-title= link_to("Customers and shop analytics", shop_path(@shop)+"/analytics/")
+  %p
+    .field-title= link_to "Add more widgets to your site", "#"
+  %br
+  %br
+  .tag-title Need some help? Visit our #{link_to "frequently asked questions page", "/faq"}
+  %br
+  %br
+  %br
+  = link_to "Take me back home", "/"
+  .pull-right= link_to(raw("<div class='text-error'> Delete this shop</div>"), shop_path(@shop), :method => :delete, :data => { :confirm => 'Do you want to delete the shop?' })

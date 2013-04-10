@@ -18,7 +18,8 @@
       %header.navbar.navbar-fixed-top
         .navbar-inner
           .container
-            = render 'layouts/navigation'
+            .span8.offset2
+              = render 'layouts/navigation'
 
       -# Main body container (bootstrap)
       #main{:role => "main"}
@@ -26,6 +27,7 @@
           .content
             .row-fluid
               .span8.offset2
+                = render 'layouts/messages'
                 = yield
     - else
       = yield

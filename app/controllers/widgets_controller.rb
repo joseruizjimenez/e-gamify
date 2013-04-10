@@ -35,4 +35,9 @@ class WidgetsController < ApplicationController
     render :text => jsonp, :content_type => "text/javascript"
   end
 
+
+  def faq
+    # just renders faq page
+  end
+
 end

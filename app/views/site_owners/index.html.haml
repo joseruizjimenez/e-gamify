@@ -1,0 +1,12 @@
+%h2 Welcome #{current_site_owner.username}, here you can admin your shops
+#yellow.well.well-large
+  - if not current_site_owner.shops.empty?
+    .tag-title Choose one to manage:
+    %br
+    %br
+    - current_site_owner.shops.each do |shop|
+      %p
+        %a{href: shop_path(shop.id)}= raw "<b>"+shop.name+"</b> - API Key: " + shop.id
+    %br
+    %br
+  .field-title= link_to "Add a new shop!", new_shop_path

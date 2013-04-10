@@ -10,7 +10,7 @@
     %li.active= link_to 'Home', root_path
     %li= link_to 'About', '/legal/about.html'
     %li= link_to 'Contact', 'mailto:joseruizjimenez@gmail.com'
-  %ul.nav.pull-right
+  %ul.nav.pull-right.header-btn
     - if site_owner_signed_in?
       %li.navbar-text= current_site_owner.email
       %li.divider-vertical

@@ -11,13 +11,13 @@ class UsersController < ApplicationController
     @user = User.first({'shop_id' => params[:shop_id], 'fb_id' => params[:fb_id]})
 
     if @user.nil?
-      shop = Shop.find(params[:shop_id])
-      @user = User.new(params[:user])
+      shop = Shop.find params[:shop_id]
+      @user = User.new params[:user]
       @user[:logued] = true
       @user[:s_token] = Base64.encode64(UUIDTools::UUID.random_create)[0..11]
       @user[:visited_at] = Time.now
       @user.add_init_rewards shop
-      shop.users.push(@user)
+      shop.users.push @user
       shop.save!
     else
       @user.update_attributes(
@@ -90,7 +90,7 @@ class UsersController < ApplicationController
   def redeem
     # redeem a given reward, checking if it leads to point increase
     @user = User.verify params[:shop_id], params[:user_id], params[:s_token]
-    shop = Shop.find(params[:shop_id])
+    shop = Shop.find params[:shop_id]
     if @user.nil? or shop.nil?
       params[:callback] ||= ""
       json = { nothing: "" }.to_json

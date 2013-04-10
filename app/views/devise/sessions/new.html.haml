@@ -1,6 +1,6 @@
 %h2 Login
 = simple_form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
-  .well
+  #yellow.well
     = f.input :email, :required => false, :autofocus => true
     = f.input :password, :required => false
     = f.input :remember_me, :label => false, :inline_label => "Remember me", :as => :boolean if devise_mapping.rememberable?
