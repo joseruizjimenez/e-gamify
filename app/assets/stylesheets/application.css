@@ -34,14 +34,14 @@ body {
   padding-left: 30px;
 }
 
-#user .tag, .tag-title {
+#user-info .tag, .tag-title {
   font-family: 'Ubuntu', sans-serif;
   font-weight: 400;
   font-size: 17px;
   display: inline;
 }
 
-#user .field, .field-title {
+#user-info .field, .field-title {
   display: inline;
   padding-left: 5px;
   font-family: 'Open Sans', sans-serif;
@@ -66,13 +66,57 @@ body {
   padding-right: 8px;
 }
 
+.tab-content {
+  margin-top: -20px;
+  margin-bottom: 15px;
+}
+
+.tab-content form {
+  margin: 0 0 5px;
+}
+
 #user-rewards .thumbnail {
-  background-color: rgb(172, 252, 230);
+  background-color: rgba(172, 252, 230, .67);
   border: 3px solid rgb(236, 236, 236);
 }
 
-#user-rewards .reward-img {
-  padding-top: 5px;
+#user-rewards .reward-img, .reward-img {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+#user-rewards .reward-name {
+  margin-top: 0px;
+  margin-bottom: 3px;
+}
+
+.reward-entry input {
+
+}
+
+.reward-node {
+  background-color: rgba(172, 252, 230, 0.67);
+  border: 3px solid rgb(236, 236, 236);
+  margin-top: 10px;
+  margin-bottom: -20px;
+}
+
+.reward-node .control-group {
+  margin-bottom: 0px;
+}
+
+.reward-node .reward-button {
+  margin-top: 25px;
+  margin-right: 10px;
+}
+
+.reward-node .delete-button {
+  margin-top: 25px;
+  margin-right: 10px;
+}
+
+.centered {
+  text-align: center;
 }
 
 .header-btn {

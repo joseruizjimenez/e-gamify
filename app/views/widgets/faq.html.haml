@@ -1,5 +1,80 @@
-%h2 FAQ...
+%h2 Frequently asked questions
 #yellow.well.well-large
-  TODO
+  %p
+    .tag-title Frequently asked question we get:
+  %p
+    .field-title= link_to "How can I install the main widget in my site?", "#Q1"
+  %p
+    .field-title= link_to "Can I change the widget colors?", "#Q2"
+  %p
+    .field-title= link_to "How can you track the likes and shares made by my customers?", "#Q3"
+  %p
+    .field-title= link_to "Is it safe to use if my shop has HTTPS enabled?", "#Q4"
+  %p
+    .field-title= link_to "How to use the coupon generator?", "#Q5"
+  %p
+    .field-title= link_to "How can the analytics dashboard help me making my customers come back?", "#Q6"
+  #Q1
+    %br
+    %br
+    %p
+      .tag-title How can I install the main widget in my site?
+    %p
+      .field-title To install the widget in your shop, first you need to access your HTML code (this is usually made with the edit page button on most shops creation services). Once you got access to your page's code, just copy this two lines just before the body tags closes (<code>&lt;/body&gt;</code>):
+      %br
+      %br
+      %code &lt;script src="http://www.e-gamify.com/assets/main_bar.js" type="text/javascript"&gt;&lt;/script&gt;
+      %br
+      %br
+      %code &lt;div id="e-gamify-main-bar" shop="YOUR_API_KEY" theme="classic" style="display: none;"&gt;&lt;/div&gt;
+      %br
+      %br
+      .field-title Note that you should change <code>YOUR_API_KEY</code> with your shop's key, you can find it under your shop's list. Make sure you repeat this action on every web page that you've got so the user gets a better experience all over your shop.
+  #Q2
+    %br
+    %br
+    %p
+      .tag-title Can I change the widget colors?
+    %p
+      .field-title You can change the classic theme on the main e-gamify widget just by changing the <code>theme</code> attribute from <i>"classic"</i> to the color you want from this set: red, brown, yellow, green, silver, pink or seablue. For example: <i>"red"</i>
+  #Q3
+    %br
+    %br
+    %p
+      .tag-title How can you track the likes and shares made by my customers?
+    %p
+      .field-title It's easy for you to do such a thing and still use your social widget or genuine social buttons like Facebook, Twitter, G+, Pinterest... In order to track this actions you need to <i>wrap</i> those buttons in your HTML with this two wrappers, one for likes buttons style and another for shares (like tweets about your products):
+      %br
+      %br
+      %code &lt;div class="e-gamify-social-btn" reward-id="SHOP_LIKES_REWARD_ID"&gt; ... &lt;/div&gt;
+      %br
+      %br
+      %code &lt;div class="e-gamify-social-btn" reward-id="SHOP_SHARING_REWARD_ID"&gt; ... &lt;/div&gt;
+      %br
+      %br
+      .field-title You can find your <code>SHOP_LIKES_REWARD_ID</code> and <code>SHOP_SHARING_REWARD_ID</code> under your shop's Rewards Quest Graph.
+  #Q4
+    %br
+    %br
+    %p
+      .tag-title Is it safe to use if my shop has HTTPS enabled?
+    %p
+      .field-title Yes it is! We made our services under bullet-proof scenarios so you can use e-gamify without breaking your shop's secure payments and processes.
+  #Q5
+    %br
+    %br
+    %p
+      .tag-title How to use the coupon generator?
+    %p
+      .field-title Most of the shop generation plataforms on the market allow you to create/activate/exange hand made coupons with your clients. We know that and designed our system in a way you can use this already avaliable feature. To enable this, go under <i>Redeemable coupons</i> option in your shop's menu, and there choose <i>create</i> and select the number of points your coupon will cost. Now you should paste there your coupons made with your shop creation plataform's tools and we will bind those points to your current coupons.
+  #Q6
+    %br
+    %br
+    %p
+      .tag-title How can the analytics dashboard help me making my customers come back?
+    %p
+      .field-title Knowing what makes your customers <i>work</i> for your shop and add value to it, it's a great resource. You should have special attention to what rewards was redeemed most, number of shares and likes per week and where did those came from. After you identify where and why those originated, you can replicate such actions and test if does that makes you drive more traffic, new users and most important, more salles.
   %br
-  .tag-title= link_to "Join now!", new_site_owner_registration_path
+  %br
+  %br
+  = link_to "Take me back home", "/"

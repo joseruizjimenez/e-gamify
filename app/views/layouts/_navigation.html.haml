@@ -11,28 +11,35 @@
     %li= link_to 'About', '/legal/about.html'
     %li= link_to 'Contact', 'mailto:joseruizjimenez@gmail.com'
   %ul.nav.pull-right.header-btn
-    - if site_owner_signed_in?
-      %li.navbar-text= current_site_owner.email
-      %li.divider-vertical
-      %li
-        .btn-group
-          %a.btn.dropdown-toggle.hidden-phone.hidden-tablet{:'data-toggle' => "dropdown", :href => "#"}
-            %i.icon-cog
-            Settings
-          %ul.dropdown-menu
-            %li
-              %a{:href => edit_site_owner_registration_path}
-                %i.icon-wrench
-                Edit account
-            %li= link_to(raw("<i class='icon-off'></i>  Logout"), destroy_site_owner_session_path, :method => :delete)
+    - if not @user
+      - if site_owner_signed_in?
+        %li.navbar-text= current_site_owner.email
+        %li.divider-vertical
+        %li
+          .btn-group
+            %a.btn.dropdown-toggle.hidden-phone.hidden-tablet{:'data-toggle' => "dropdown", :href => "#"}
+              %i.icon-cog
+              Settings
+            %ul.dropdown-menu
+              %li
+                %a{:href => edit_site_owner_registration_path}
+                  %i.icon-wrench
+                  Edit account
+              %li= link_to(raw("<i class='icon-off'></i>  Logout"), destroy_site_owner_session_path, :method => :delete)
+      - else
+        %li
+          .navbar-btn-span
+            %a.btn.btn-success{:href => new_site_owner_session_path}
+              %i.icon-user.icon-white
+              Login
+        %li
+          %div
+            %a.btn.btn-info{:href => new_site_owner_registration_path}
+              %i.icon-flag.icon-white
+              Sign up
     - else
       %li
         .navbar-btn-span
           %a.btn.btn-success{:href => new_site_owner_session_path}
             %i.icon-user.icon-white
-            Login
-      %li
-        %div
-          %a.btn.btn-info{:href => new_site_owner_registration_path}
-            %i.icon-flag.icon-white
-            Sign up
+            Login as shop admin

@@ -2,7 +2,7 @@
 = simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
   = f.error_notification
   #yellow.well
-    = f.input :email, :autofocus => true, :placeholder => 'user@example.com', :required => false
+    = f.input :email, :placeholder => 'user@example.com', :required => false
     = f.input :username, :placeholder => 'What should we call you?', :required => false
     = f.input :password, :required => false
     = f.input :password_confirmation, :required => false

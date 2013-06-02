@@ -3,6 +3,7 @@ EGamify::Application.routes.draw do
   get "widgets/main_bar"
   get "widgets/fb_login"
   get "widgets/fb_check"
+  get "widgets/faq"
 
   devise_for :site_owners
 

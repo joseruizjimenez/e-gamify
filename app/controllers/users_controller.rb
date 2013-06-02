@@ -3,9 +3,6 @@ require 'base64'
 
 class UsersController < ApplicationController
 
-  def index
-  end
-
 
   def create
     @user = User.first({'shop_id' => params[:shop_id], 'fb_id' => params[:fb_id]})
@@ -41,13 +38,13 @@ class UsersController < ApplicationController
 
   def show
     @user = User.verify params[:shop_id], params[:id], params[:s_token]
-    @shop = Shop.find params[:shop_id]
     if @user.nil?
       params[:callback] ||= ""
       json = { nothing: "" }.to_json
       jsonp = params[:callback] + "(" + json + ")"
       render :text => jsonp, :content_type => "text/javascript"#, :status => :unauthorized
     else
+      @shop = Shop.find params[:shop_id]
       # new account points
       if @user.total_points == 0
         welcome_reward = (@shop.rewards.select { |r| r.name == "Welcome!" })[0]
@@ -125,6 +122,17 @@ class UsersController < ApplicationController
 
 
   def destroy
+    user = User.verify params[:shop_id], params[:id], params[:s_token]
+    unless user.nil?
+      @shop = Shop.find params[:shop_id]
+      unless @shop.nil?
+        @shop.users.delete_if {|u| u.id.to_s == params[:id]}
+        if @shop.save!
+          flash[:notice] = "Your account was <b>deleted</b> successfully!"
+        end
+      end
+    end
+    redirect_to "/"
   end
 
 end

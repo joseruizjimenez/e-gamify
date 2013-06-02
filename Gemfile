@@ -16,6 +16,8 @@ gem 'devise'
 gem 'mm-devise'
 # FB auth - omiauth-facebook
 # gem 'omniauth-facebook'
+# Draw HTML charts
+gem 'chartkick'
 
 # Gems used only for assets and not required
 # in production environments by default.

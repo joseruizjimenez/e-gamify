@@ -1,5 +1,87 @@
-%h2 QUESTS GRAPH...
+- content_for :bottom do
+  %script{src: "/assets/js/two.min.js"}
+  %script{src: "/assets/rewards_index_utils.js"}
+
+%h2 #{@shop.name+"'s"} rewards graph
+.tabbable
+  %ul.nav.nav-tabs
+    %li
+      %a{href: "#tab_new", :'data-toggle' => "tab"} <b>New Reward</b>
+    - activePrinted = false
+    - @shop.rewards.each do |r|
+      - if not activePrinted
+        - activePrinted = true
+        %li.active
+          %a{href: "#tab_"+r.id.to_s, :'data-toggle' => "tab"}= r.name
+      - else
+        %li
+          %a{href: "#tab_"+r.id.to_s, :'data-toggle' => "tab"}= r.name
+  .tab-content
+    - activePrintedPane = false
+    - @shop.rewards.each do |r|
+      .tab-pane{id: "tab_"+r.id.to_s}
+        = simple_form_for(:reward, :url => shop_reward_path(@shop, r.id.to_s), :html => { :method => :put }) do |f|
+          .reward-edits
+            =f.error_notification
+            .pull-left.span3
+              %p
+              .centered
+                %img.reward-img{src:r.img_uri, alt:r.name}
+              = f.input :name, :label => "Reward's name", :required => false, input_html: { class: "span12", :value => r.name, disabledd: "" }
+              = f.input :info, :required => false, input_html: { class: "span12", style: "height: 60px", :value => r.info, disabledd: "" }, as: "text"
+            .pull-right.span9
+              %ul.thumbnails
+                %li.span6
+                  .thumbnail.reward-node{id: "reward_node_"+r.id.to_s}
+                    = f.input :add_points, :label => "Points rewarded", :required => false, input_html: {:value => r.add_points, class: "span12", disabledd: ""}
+                    = f.input :add_msg, :label => "Message that shows when rewarded", :required => false, input_html: {:value => r.add_msg, class: "span12", disabledd: ""}
+                    = f.input :redeem_hits, :label => "Minimum hits to get this level", :required => false, input_html: {:value => r.redeem_hits[0], class: "span12", disabledd: ""}
+                    .btn-group{:'data-toggle'=>"buttons-radio"}
+                      %label.radio_buttons.optional.control-label{style: ""} Repeatable?
+                      - if r.repeatable
+                        %button.btn.active.btn_repeatable_true{type: "button", reward: r.id.to_s} Yes
+                        %button.btn.btn_repeatable_false{type: "button", reward: r.id.to_s} No
+                      - else
+                        %button.btn.btn_repeatable_true{type: "button", reward: r.id.to_s} Yes
+                        %button.btn.active.btn_repeatable_false{type: "button", reward: r.id.to_s} No
+                      = f.input :repeatable, :required => false, :as => :hidden, input_html: { value: r.repeatable, class: "reward_repeatable_"+r.id.to_s }
+                    .reward-button.pull-right
+                      %button.btn.btn-primary{:name => "commit", :type => "submit"} Edit
+                    .delete-button.pull-right
+                      = link_to("Delete", shop_reward_path(@shop, r.id.to_s), :method => :delete, :data => { :confirm => 'Do you want to delete this reward?' }, class: "btn btn-danger")
+                    %p
+                .add-level
+                  .two-canvas{reward: "reward_node_"+r.id.to_s, levels: r.redeem_hits.join(',')}
+    .tab-pane.active.fade{id: "tab_new"}
+      = simple_form_for(:reward, :url => shop_rewards_path) do |f|
+        .reward-entry
+          =f.error_notification
+          .pull-left.span3
+            %p
+            .centered
+              %img.reward-img{src:"http://localhost:3000/img/rewards/join.png",alt:"r.name"}
+            = f.input :name, :label => "Reward's name", :placeholder => "Ex: sharing", :required => false, input_html: { class: "span12" }
+            = f.input :info, :placeholder => "Add a description", :required => false, input_html: { class: "span12", style: "height: 60px" }, as: "text"
+          .pull-right.span9
+            %ul.thumbnails
+              %li.span6
+                .thumbnail.reward-node
+                  = f.input :add_points, :label => "Points rewarded", :placeholder => "Ex: 10", :required => false, input_html: {class: "span12"}
+                  = f.input :add_msg, :label => "Message that shows when rewarded", :placeholder => "Ex: you are the sharing king!", :required => false, input_html: {class: "span12"}
+                  = f.input :redeem_hits, :label => "Minimum hits required to win it", :placeholder => "Ex: 3", :required => false, input_html: {class: "span12"}
+                  .btn-group{:'data-toggle'=>"buttons-radio"}
+                    %label.radio_buttons.optional.control-label{style: ""} Repeatable?
+                    %button.btn.btn_repeatable_true_new{type: "button"} Yes
+                    %button.btn.active.btn_repeatable_false_new{type: "button"} No
+                    = f.input :repeatable, :required => false, :as => :hidden, input_html: { value: "false", class: "reward_repeatable" }
+                  .reward-button.pull-right
+                    %button.btn.btn-primary{:name => "commit", :type => "submit"} Done!
+                  %p
+              //.add-level
+              //  .two-canvas
 #yellow.well.well-large
-  TODO
-  %br
-  .tag-title= link_to "Join now!", new_site_owner_registration_path
+  .tag-title Manage your rewards
+  %p
+  %p You can easily <u>add, remove or edit rewards</u> for your customers from this graph. First tag them under one category, then create a new reward. You can make it <b>repeatable</b> or even <b>create different levels</b> for each reward!
+  %p When you are done, grab your reward id and paste the tag where you want the user to find it and get his points!
+  .tag-title= link_to "Take me back!", shop_path(@shop)

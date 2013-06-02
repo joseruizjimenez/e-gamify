@@ -1,4 +1,5 @@
 class ShopsController < ApplicationController
+  before_filter :authenticate_site_owner!
 
   def index
   end
@@ -61,11 +62,15 @@ class ShopsController < ApplicationController
 
 
   def show
-    @shop = Shop.find params[:id]
-    respond_to do |format|
-      format.xml  { render :xml => @shop }
-      format.json { render :json => @shop }
-      format.html { render :show }
+    @shop = current_site_owner.shops.find params[:id]
+    if @shop.nil?
+      redirect_to "/"
+    else
+      respond_to do |format|
+        format.xml  { render :xml => @shop }
+        format.json { render :json => @shop }
+        format.html { render :show }
+      end
     end
   end
 
@@ -75,15 +80,22 @@ class ShopsController < ApplicationController
 
 
   def destroy
-    shop = Shop.find params[:id]
-    shop.destroy
-    flash[:notice] = "Your shop was <b>deleted</b> successfully!"
+    shop = current_site_owner.shops.find params[:id]
+    unless shop.nil?
+      shop.destroy
+      flash[:notice] = "Your shop was <b>deleted</b> successfully!"
+    end
     redirect_to "/"
   end
 
 
   def analytics
-    # TODO
+    @shop = current_site_owner.shops.find params[:id]
+    if @shop.nil?
+      redirect_to "/"
+    else
+      # TODO: fallback to analytics haml
+    end
   end
 
 end
