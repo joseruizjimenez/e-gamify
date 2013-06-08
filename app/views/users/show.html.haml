@@ -18,7 +18,7 @@
       .tag Actions made:
       .field= @user.actions_count
     %br
-    .field= link_to "Get coupons with points", "#"
+    .field= link_to "Get coupons with points", shop_user_coupons_path(@shop, @user) + "?s_token=" + @user.s_token
   #user-rewards
     %ul.thumbnails
       - @user.reward_hits.each do |reward_id, hits|

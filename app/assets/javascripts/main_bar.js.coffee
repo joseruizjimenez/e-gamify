@@ -19,7 +19,7 @@ blank_state_html = "<div id='e-gamify-user-wrap' style='display: none;'>
                     <div id='e-gamify-status'><img src='http://" + e_gamify_domain +
                     "/widgets/img/ajax-loader.gif'></img></div>"
 
-idle_status_html = "logued in!"
+idle_status_html = "Welcome back and happy shopping!"
 
 fonts_html = "<link href='https://fonts.googleapis.com/css?family=Ubuntu|Open+Sans' rel='stylesheet' type='text/css'>"
 

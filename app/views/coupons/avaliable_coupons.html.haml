@@ -1,0 +1,59 @@
+- content_for :bottom do
+  %script{src: "/assets/avaliable_coupons_utils.js"}
+
+%h2 Spend points and get #{link_to @shop.name, @shop.uri}' coupons!
+#yellow.well.well-large
+  - unless @user.coupons.empty?
+    .tag-title #{@user.name}, you have some discounts ready to be used (<a href="#">learn how</a>):
+    %br
+    %br
+    - hidden_coupons = false
+    - @user.coupons.sort_by(&:updated_at).each do |c|
+      .no-link
+        - if c.stock == 0
+          - hidden_coupons = true
+          %a{href: shop_user_coupon_path(@shop, @user, c.id.to_s)+"/used?s_token="+@user.s_token, :'data-method' => "post", rel: "nofollow"}
+            .coupon-show.used
+              .tag-field <b>#{c.description}</b> (#{c.cost} points) - <u>Code</u>: <code>#{c.codes[0]}</code>
+              .tag-field <u>Purchase date</u>: #{c.updated_at.strftime("%A, %B %d, %Y")} - <u>Expiration date</u>: #{c.expires_at.strftime("%A, %B %d, %Y")}
+        - else
+          %a{href: shop_user_coupon_path(@shop, @user, c.id.to_s)+"/used?s_token="+@user.s_token, :'data-method' => "post", rel: "nofollow"}
+            .coupon-show.usable
+              .mark-used.tag-title.pull-right Click to mark as used
+              .tag-field <b>#{c.description}</b> (#{c.cost} points) - <u>Code</u>: <code>#{c.codes[0]}</code>
+              .tag-field <u>Purchase date</u>: #{c.updated_at.strftime("%A, %B %d, %Y")} - <u>Expiration date</u>: #{c.expires_at.strftime("%A, %B %d, %Y")}
+    - if hidden_coupons
+      %p#toggle-used.pull-right
+        %a{href: "#"} <u>Show used coupons</u>
+    %br
+    %br
+  .tag-title New coupons avaliable to purchase:
+  %br
+  %br
+  - @shop.coupons.sort_by(&:updated_at).each do |c|
+    - if c.expires_at > Time.now and c.activate_at < Time.now and (c.stock > 0 or c.stock == -1)
+      .no-link
+        %a{href: "#"}
+          .coupon-show.buyable{:'coupon-id' => c.id.to_s, :'coupon-cost' => c.cost.to_s, :'coupon-description' => c.description, :'user-points' => @user.points.to_s, :'user-id' => @user.id.to_s, :'user-token' => @user.s_token, :'shop-id' => @shop.id.to_s}
+            - if @user.points >= c.cost
+              .tag-field <b>#{c.description}</b> (<div style="display: inline; color: green;">#{c.cost} points</div>) - <u>Code</u>: <code>? ? ? ? ? ? ? ? ? ? ? ? ? ? ?</code>
+            - else
+              .tag-field <b>#{c.description}</b> (<div style="display: inline; color: red;">#{c.cost} points</div>) - <u>Code</u>: <code>? ? ? ? ? ? ? ? ? ? ? ? ? ? ?</code>
+            .tag-field <u>Active since</u>: #{c.activate_at.strftime("%A, %B %d, %Y")} - <u>Expiration date</u>: #{c.expires_at.strftime("%A, %B %d, %Y")}
+  %br
+  %br
+  .pull-left.tag-title= link_to "Take me back", shop_user_path(@shop, @user) + "?s_token=" + @user.s_token
+  .pull-right.tag-title Total points: #{@user.points.to_s}
+  %br
+
+#redeem-coupon.modal.hide.fade
+  .modal-header
+    %button{type:"button", class: "close", :'data-dismiss' => "modal", :'aria-hidden' => "true"} &times;
+    %h3 Redeem your points
+  .modal-body.redeem-body
+    %p.redeem-msg.tag-title Sorry... You don't have enought points yet
+    %p
+    .redeem-btn.hide
+      = link_to("Redeem", shop_coupons_path(@shop), :method => :post, class: "btn btn-info")
+    .cancel-redeem-btn
+      = link_to("Go back", "#", class: "btn")

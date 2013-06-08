@@ -25,8 +25,13 @@ EGamify::Application.routes.draw do
     resources :users do
       get 'logout'
       get 'redeem/:reward_id' => 'users#redeem'
+      resources :coupons do
+        post 'redeem'
+        post 'used'
+      end
     end
     resources :rewards
+    resources :coupons
   end
 
   # Sample resource route with options:

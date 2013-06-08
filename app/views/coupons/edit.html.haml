@@ -1,0 +1,24 @@
+%h2 Modify or delete this coupon:
+#yellow.well.well-large
+  .tag-title Tip: You can choose a timed activation date to plan promotions properly:
+  %p
+  .new-coupon
+    = simple_form_for(:coupon, :url => shop_coupon_path(@shop, @coupon), :html => { :method => :put }) do |f|
+      = f.error_notification
+      = f.input :description, :required => false
+      - if @coupon.stock == -1
+        = f.input :stock, :required => false, input_html: { value: "" }, :label => "Stock (<i>Empty field means no limit</i>)"
+      - else
+        = f.input :stock, :required => false, input_html: { value: @coupon.stock }
+      = f.input :cost, :as => :integer, :required => false, :label => 'Points cost'
+      = f.input :activate_at, :as => :date, :required => false, start_year: @coupon.activate_at.year-5, default: @coupon.activate_at, :label => 'Activation date'
+      = f.input :expires_at, :as => :date, :required => false, start_year: @coupon.activate_at.year-5, end_year: @coupon.activate_at.year+10, :include_blank => true, default: @coupon.expires_at, :label => 'Expiration date (<i>Empty fields means no expiration</i>)'
+      .tag-title Add just one or several codes from your online shop manager (see FAQ for more info)
+      %p
+      = f.input :codes, :as => :text, :required => false, :label => false, input_html: { class: "span10", style: "height: 80px", :value => @coupon.codes.join(",") }
+      %button.pull-left.btn.btn-primary{:name => "commit", :type => "submit"}
+        Update coupons
+      .delete-button.pull-right
+        = link_to("Delete", shop_coupon_path(@shop, @coupon), :method => :delete, :data => { :confirm => 'Do you want to delete this coupon?' }, class: "btn btn-danger")
+      .pull-left{style: "margin-left: 5px;"}= link_to("Cancel", shop_coupons_path(@shop), class: "btn")
+  %br

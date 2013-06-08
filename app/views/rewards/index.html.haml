@@ -2,7 +2,12 @@
   %script{src: "/assets/js/two.min.js"}
   %script{src: "/assets/rewards_index_utils.js"}
 
-%h2 #{@shop.name+"'s"} rewards graph
+%br
+#yellow.well.well-large
+  .tag-title Manage your rewards
+  %p
+  %p You can easily <u>add, remove or edit rewards</u> for your customers from this graph. First tag them under one category, then create a new reward. You can make it <b>repeatable</b> or even <b>create different levels</b> for each reward!
+  %p When you are done, grab your reward id and paste the tag where you want the user to find it and get his points!
 .tabbable
   %ul.nav.nav-tabs
     %li
@@ -18,7 +23,7 @@
           %a{href: "#tab_"+r.id.to_s, :'data-toggle' => "tab"}= r.name
   .tab-content
     - activePrintedPane = false
-    - @shop.rewards.each do |r|
+    - @shop.rewards.sort_by(&:updated_at).each do |r|
       .tab-pane{id: "tab_"+r.id.to_s}
         = simple_form_for(:reward, :url => shop_reward_path(@shop, r.id.to_s), :html => { :method => :put }) do |f|
           .reward-edits
@@ -26,7 +31,8 @@
             .pull-left.span3
               %p
               .centered
-                %img.reward-img{src:r.img_uri, alt:r.name}
+                %img.reward-img.choose-img{src:r.img_uri, alt:r.name, reward_id: r.id.to_s}
+              = f.input :img_uri, :required => false, :as => :hidden, input_html: { value: r.img_uri }
               = f.input :name, :label => "Reward's name", :required => false, input_html: { class: "span12", :value => r.name, disabledd: "" }
               = f.input :info, :required => false, input_html: { class: "span12", style: "height: 60px", :value => r.info, disabledd: "" }, as: "text"
             .pull-right.span9
@@ -59,16 +65,17 @@
           .pull-left.span3
             %p
             .centered
-              %img.reward-img{src:"http://localhost:3000/img/rewards/join.png",alt:"r.name"}
-            = f.input :name, :label => "Reward's name", :placeholder => "Ex: sharing", :required => false, input_html: { class: "span12" }
-            = f.input :info, :placeholder => "Add a description", :required => false, input_html: { class: "span12", style: "height: 60px" }, as: "text"
+              %img.reward-img.choose-img{src:"http://localhost:3000/img/rewards/choose.png",alt:"r.name", reward_id: "new_img_uri"}
+            = f.input :img_uri, :required => false, :as => :hidden, input_html: { value: "http://localhost:3000/img/rewards/choose.png" }
+            = f.input :name, :label => "Reward's name", :placeholder => "Ex: sharing", :required => false, input_html: { value: "", class: "span12" }
+            = f.input :info, :placeholder => "Add a description", :required => false, input_html: { value: "", class: "span12", style: "height: 60px" }, as: "text"
           .pull-right.span9
             %ul.thumbnails
               %li.span6
                 .thumbnail.reward-node
-                  = f.input :add_points, :label => "Points rewarded", :placeholder => "Ex: 10", :required => false, input_html: {class: "span12"}
-                  = f.input :add_msg, :label => "Message that shows when rewarded", :placeholder => "Ex: you are the sharing king!", :required => false, input_html: {class: "span12"}
-                  = f.input :redeem_hits, :label => "Minimum hits required to win it", :placeholder => "Ex: 3", :required => false, input_html: {class: "span12"}
+                  = f.input :add_points, :label => "Points rewarded", :placeholder => "Ex: 10", :required => false, input_html: {value: "", class: "span12"}
+                  = f.input :add_msg, :label => "Message that shows when rewarded", :placeholder => "Ex: you are the sharing king!", :required => false, input_html: {value: "", class: "span12"}
+                  = f.input :redeem_hits, :label => "Minimum hits required to win it", :placeholder => "Ex: 3", :required => false, input_html: {value: "", class: "span12"}
                   .btn-group{:'data-toggle'=>"buttons-radio"}
                     %label.radio_buttons.optional.control-label{style: ""} Repeatable?
                     %button.btn.btn_repeatable_true_new{type: "button"} Yes
@@ -79,9 +86,54 @@
                   %p
               //.add-level
               //  .two-canvas
-#yellow.well.well-large
-  .tag-title Manage your rewards
-  %p
-  %p You can easily <u>add, remove or edit rewards</u> for your customers from this graph. First tag them under one category, then create a new reward. You can make it <b>repeatable</b> or even <b>create different levels</b> for each reward!
-  %p When you are done, grab your reward id and paste the tag where you want the user to find it and get his points!
-  .tag-title= link_to "Take me back!", shop_path(@shop)
+
+.tag-title.pull-right= link_to "Take me back!", shop_path(@shop)
+#reward-id.tag-title.pull-left Reward ID: <code>#{@shop.rewards.sort_by(&:updated_at)[0].id.to_s}</code>
+
+#reward-images.modal.hide.fade
+  .modal-header
+    %button{type:"button", class: "close", :'data-dismiss' => "modal", :'aria-hidden' => "true"} &times;
+    %h3 Choose the reward's image
+  .modal-body
+    .reward-img-thumbnails
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/ace.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/back-forth.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/bookmarklet.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/cake-slice.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/capitol.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/cash.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/cctv-camera.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/checked-shield.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/coffee-mug.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/conversation.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/crown.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/crown-coin.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/domino-mask.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/dozen.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/flower-pot.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/flying-flag.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/gears.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/gems.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/letter-bomb.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/magnifying-glass.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/medal.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/muscle-up.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/night-sky.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/queen-crown.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/radar-dish.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/raining.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/rocket.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/scales.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/shark-jaws.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/shining-heart.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/shiny-purse.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/stopwatch.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/surprised-skull.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/swap-bag.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/telepathy.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/tic-tac-toe.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/tied-scroll.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/trousers.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/umbrella.png"}
+      %img.reward-img-thumbnail{src: "http://localhost:3000/img/rewards/wave-crest.png"}
+  .modal-footer

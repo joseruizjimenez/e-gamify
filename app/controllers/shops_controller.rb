@@ -14,7 +14,7 @@ class ShopsController < ApplicationController
       add_points: 15,
       add_msg: "Just won 15 points with your first login!",
       cost: 0,
-      img_uri: "/img/rewards/join.png",
+      img_uri: "/img/rewards/swap-bag.png",
       activate_at: Time.now
     }
     like_reward = {
@@ -26,7 +26,7 @@ class ShopsController < ApplicationController
       add_points: 1,
       add_msg: "Just won 1 point with your like!",
       cost: 0,
-      img_uri: "/img/rewards/like.png",
+      img_uri: "/img/rewards/shining-heart.png",
       activate_at: Time.now
     }
     share_reward = {
@@ -37,7 +37,7 @@ class ShopsController < ApplicationController
       add_points: 1,
       add_msg: "Just won 1 points with your sharing!",
       cost: 0,
-      img_uri: "/img/rewards/share.png",
+      img_uri: "/img/rewards/conversation.png",
       activate_at: Time.now
     }
     @shop.rewards.build welcome_reward

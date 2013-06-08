@@ -5,6 +5,7 @@ $ = window.jQuery
 Two = window.Two
 touch_counter = 0
 current_reward_hits = {}
+img_to_change = undefined
 
 draw_add_level = ->
   params = { width: 180, height: 230 }
@@ -161,6 +162,30 @@ scaleCircles = (scale)->
 # Some hotfixes for UI to work as desired on startup
 $("#tab_new").removeClass("active")
 $(".tab-pane").first().addClass("active")
+$(".nav-tabs li").click ->
+  choosen_id = $(this).find("a").attr("href").split('_')[1]
+  if choosen_id is "new"
+    $("#reward-id").html ""
+  else
+    $("#reward-id").html "Reward ID: <code>" + choosen_id + "</code>"
+
+$(".choose-img").css('cursor', 'pointer')
+
+$(".choose-img").click ->
+  img_to_change = $(this).attr 'reward_id'
+  $("#reward-images").modal('show')
+
+$(".reward-img-thumbnail").css('cursor', 'pointer')
+
+$(".reward-img-thumbnail").click ->
+  if img_to_change is "new_img_uri"
+    img_domElement = $(".reward-entry")
+  else
+    img_domElement = $("#tab_" + img_to_change)
+  img_uri = $(this).attr('src')
+  img_domElement.find("#reward_img_uri").attr 'value', img_uri
+  img_domElement.find(".reward-img").attr 'src', img_uri
+  $("#reward-images").modal('hide')
 
 $(".btn_repeatable_true").click ->
   $(".reward_repeatable_" + $(this).attr("reward")).attr "value", "true"

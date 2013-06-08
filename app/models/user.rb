@@ -23,6 +23,7 @@ class User
   timestamps!
 
   belongs_to :shop
+  many :coupons
 
 
   def self.verify(shop_id, user_id, s_token)

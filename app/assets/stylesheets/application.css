@@ -115,10 +115,90 @@ body {
   margin-right: 10px;
 }
 
+.reward-img-thumbnails {
+  margin-left: 35px;
+}
+
+.reward-img-thumbnail {
+  margin: 5px;
+}
+
 .centered {
   text-align: center;
 }
 
 .header-btn {
   padding-right: 45px;
+}
+
+.coupon_stock, .coupon_cost {
+  display: inline-block;
+}
+
+.coupon-show {
+  /*background-color: rgb(255, 247, 203);*/
+  background-color: rgba(254, 255, 168, 0.52);
+  text-decoration: none;
+  margin-bottom: 15px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  border-style: dashed;
+  border-width: 2px;
+  border-color: rgb(192, 192, 219);
+  padding: 15px;
+  text-align: center;
+}
+
+.coupon-show:hover {
+  background-color: rgb(254, 255, 158);/*rgb(255, 231, 187);*/
+  border-color: rgb(155, 155, 214);
+}
+
+.usable:hover {
+  color: transparent;
+  text-shadow: 0px 0px 3px #333;
+}
+
+.used {
+  background-color: rgba(222, 223, 189, 0.52);
+  display: none;
+}
+
+.used:hover {
+  background-color: rgb(222, 223, 189);
+}
+
+.mark-used {
+  display: none;
+  position: absolute;
+  margin-left: 560px;
+  margin-top: -8px;
+  text-shadow: 0px 0px 0px #333;
+}
+
+.redeem-body {
+  text-align: center;
+}
+
+.no-link a {
+  color: #333;
+  text-decoration: none;
+}
+
+.no-link a:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+.tag-field {
+  /*padding-left: 5px;*/
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.coupon-separator {
+  border-top: rgb(245, 201, 135);
+  border-bottom-color: rgb(58, 240, 160);
 }

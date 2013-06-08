@@ -1,0 +1,19 @@
+%h2 Manage your shop's coupons:
+#yellow.well.well-large
+  .tag-title Here you can add, update or delete coupons avaliable to your customers:
+  %p
+    .field-title= link_to "Add new coupon", new_shop_coupon_path(@shop)
+  - unless @shop.coupons.empty?
+    %br
+    - @shop.coupons.sort_by(&:updated_at).each do |c|
+      .no-link
+        %a{href: edit_shop_coupon_path(@shop, c.id.to_s)}
+          .coupon-show
+            .tag-field <b>#{c.description}</b> (#{c.cost} points) #{raw('- <u>Stock</u>: '+c.stock.to_s) unless c.stock == -1} - <u>Codes</u>: <code>#{c.codes.join(", ")}</code>
+            .tag-field <u>Active since</u>: #{c.activate_at.strftime("%A, %B %d, %Y")} - <u>Expiration date</u>: #{c.expires_at.strftime("%A, %B %d, %Y")}
+      -#%hr.coupon-separator
+  %br
+  %br
+  .pull-right.tag-title Need some help? Visit our #{link_to "frequently asked questions page", "/widgets/faq"}
+  .pull-left.tag-title= link_to "Take me back", shop_path(@shop)
+  %br

@@ -1,0 +1,20 @@
+%h2 Add a new coupon to #{@shop.name}:
+#yellow.well.well-large
+  .tag-title Tip: You can choose a timed activation date to plan promotions properly:
+  %p
+  .new-coupon
+    = simple_form_for(:coupon, :url => shop_coupons_path) do |f|
+      = f.error_notification
+      = f.input :description, :autofocus => true, :placeholder => '10% off your next purchase', :required => false
+      = f.input :stock, :placeholder => 'Leave empty or give a stock', :required => false, :label => "Stock (<i>Empty field means no limit</i>)"
+      = f.input :cost, :as => :integer, :required => false, :label => 'Points cost', :placeholder => "100"
+      = f.input :activate_at, :as => :date, :required => false, start_year: Date.today.year, :label => 'Activation date'
+      = f.input :expires_at, :as => :date, :required => false, start_year: Date.today.year, :include_blank => true, :label => 'Expiration date (<i>Empty fields means no expiration</i>)'
+      .tag-title Add just one or several codes from your online shop manager (see FAQ for more info)
+      %p
+      = f.input :codes, :as => :text, :required => false, :label => false, :placeholder => "318v21KC9,21H4RT53Z", input_html: { class: "span10", style: "height: 80px" }
+      %button.pull-left.btn.btn-primary{:name => "commit", :type => "submit"}
+        Add coupons
+      .pull-left{style: "margin-left: 5px;"}= link_to("Cancel", shop_coupons_path(@shop), class: "btn")
+  .pull-right.tag-title Need some help? Visit our #{link_to "frequently asked questions page", "/widgets/faq"}
+  %br

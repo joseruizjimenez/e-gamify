@@ -12,5 +12,6 @@ class Shop
   belongs_to :site_owner
   many :users
   many :rewards
+  many :coupons
 
 end
