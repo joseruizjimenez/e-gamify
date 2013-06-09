@@ -17,7 +17,6 @@ class RewardsController < ApplicationController
       redirect_to "/"
     else
       @reward = @shop.rewards.build params[:reward]
-      #@shop.rewards.find('51ab2c82abd737088f000603').destroy
       if @shop.save!
         flash[:notice] = "Success! New <b>reward added</b>!"
       else
@@ -51,6 +50,8 @@ class RewardsController < ApplicationController
 
   def update
     params[:reward][:redeem_hits] = params[:reward][:redeem_hits].split(",")
+    .map { |h| Integer(h) unless h == 'NaN' }.compact
+    params[:reward][:add_points] = params[:reward][:add_points].split(",")
     .map { |h| Integer(h) unless h == 'NaN' }.compact
     @shop = current_site_owner.shops.find params[:shop_id]
     if @shop.nil?

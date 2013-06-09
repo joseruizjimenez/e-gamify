@@ -13,7 +13,7 @@
     %li
       %a{href: "#tab_new", :'data-toggle' => "tab"} <b>New Reward</b>
     - activePrinted = false
-    - @shop.rewards.each do |r|
+    - @shop.rewards.sort_by(&:created_at).each do |r|
       - if not activePrinted
         - activePrinted = true
         %li.active
@@ -23,7 +23,7 @@
           %a{href: "#tab_"+r.id.to_s, :'data-toggle' => "tab"}= r.name
   .tab-content
     - activePrintedPane = false
-    - @shop.rewards.sort_by(&:updated_at).each do |r|
+    - @shop.rewards.sort_by(&:created_at).each do |r|
       .tab-pane{id: "tab_"+r.id.to_s}
         = simple_form_for(:reward, :url => shop_reward_path(@shop, r.id.to_s), :html => { :method => :put }) do |f|
           .reward-edits
@@ -39,7 +39,7 @@
               %ul.thumbnails
                 %li.span6
                   .thumbnail.reward-node{id: "reward_node_"+r.id.to_s}
-                    = f.input :add_points, :label => "Points rewarded", :required => false, input_html: {:value => r.add_points, class: "span12", disabledd: ""}
+                    = f.input :add_points, :label => "Points rewarded", :required => false, input_html: {:value => r.add_points[0], class: "span12", disabledd: ""}
                     = f.input :add_msg, :label => "Message that shows when rewarded", :required => false, input_html: {:value => r.add_msg, class: "span12", disabledd: ""}
                     = f.input :redeem_hits, :label => "Minimum hits to get this level", :required => false, input_html: {:value => r.redeem_hits[0], class: "span12", disabledd: ""}
                     .btn-group{:'data-toggle'=>"buttons-radio"}
@@ -57,7 +57,7 @@
                       = link_to("Delete", shop_reward_path(@shop, r.id.to_s), :method => :delete, :data => { :confirm => 'Do you want to delete this reward?' }, class: "btn btn-danger")
                     %p
                 .add-level
-                  .two-canvas{reward: "reward_node_"+r.id.to_s, levels: r.redeem_hits.join(',')}
+                  .two-canvas{reward: "reward_node_"+r.id.to_s, levels: r.redeem_hits.join(','), points: r.add_points.join(',')}
     .tab-pane.active.fade{id: "tab_new"}
       = simple_form_for(:reward, :url => shop_rewards_path) do |f|
         .reward-entry

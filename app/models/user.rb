@@ -53,6 +53,7 @@ class User
     add_points = 0
     add_msg = ''
     if self.redeemed_rewards[reward.id.to_s].nil?
+      # if he didnt get it yet, and has enought hits, he gets it
       if self.reward_hits[reward.id.to_s] >= reward.redeem_hits[0]
         self.redeemed_rewards[reward.id.to_s] = 1
         redeemed = true
@@ -61,7 +62,9 @@ class User
         add_msg = 'Just ' + pts_left.to_s + ' more ' + reward.name + ' to get your points!'
       end
     elsif reward.repeatable
+      # if he got it already, checks if it's repeatable
       if self.reward_hits[reward.id.to_s] >= reward.redeem_hits[0]
+        # if it has enought hits, he get's the points and reset the hit count
         self.reward_hits[reward.id.to_s] = 0
         self.redeemed_rewards[reward.id.to_s] += 1
         redeemed = true
@@ -70,6 +73,7 @@ class User
         add_msg = 'Just ' + pts_left.to_s + ' more ' + reward.name + ' to get your points!'
       end
     elsif reward.redeem_hits.size > self.redeemed_rewards[reward.id.to_s]
+      # if not repeatable but there are more levels...
       if self.reward_hits[reward.id.to_s] >= reward.redeem_hits[self.redeemed_rewards[reward.id.to_s]]
         self.redeemed_rewards[reward.id.to_s] += 1
         redeemed = true
@@ -77,6 +81,9 @@ class User
         pts_left = reward.redeem_hits[self.redeemed_rewards[reward.id.to_s]] - self.reward_hits[reward.id.to_s]
         add_msg = 'Just ' + pts_left.to_s + ' more ' + reward.name + ' to get your points!'
       end
+    else
+      # already got the max level
+      self.reward_hits[reward.id.to_s] -= 1
     end
 
     self.actions_count += 1
@@ -87,9 +94,14 @@ class User
     end
 
     if redeemed
-      self.total_points += reward.add_points
-      self.points += reward.add_points
-      add_points = reward.add_points
+      if reward.repeatable
+        adding_points = reward.add_points[0]
+      else
+        adding_points = reward.add_points[self.redeemed_rewards[reward.id.to_s]-1]
+      end
+      self.total_points += adding_points
+      self.points += adding_points
+      add_points = adding_points
       add_msg = reward.add_msg
     end
 

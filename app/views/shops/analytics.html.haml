@@ -1,7 +1,22 @@
 - content_for :bottom do
   - javascript_include_tag "//www.google.com/jsapi", "chartkick"
-%h2 ANALYTICS...
+
+%br
 #yellow.well.well-large
-  TODO
-  %br
-  .tag-title= link_to "Join now!", new_site_owner_registration_path
+  .tag-title Review your shop's analytics
+  %p
+  %p Here you can learn <b>what your clients are up to</b>, from what day of the week they make the most activity to the percentage of users signing up to our loyalty program. How many points do they make per day of the week or what coupons the love the most! Use this data to <u>plan effective campaigns</u> and grow the <u>comunity</u> around your shop.
+.tabbable
+  %ul.nav.nav-tabs
+    %li.active
+      %a{:'data-toggle' => "tab", href: '#tab_1'} Dashboard
+    %li
+      %a{:'data-toggle' => "tab", href: '#tab_2'} Accounts
+  .tab-content
+    .tab-pane.active{id: "tab_1"}
+      .centered Hola 1
+    .tab-pane{id: "tab_2"}
+      .centered Hola2
+
+.pull-left.tag-title= link_to "Take me back", shop_path(@shop)
+%br

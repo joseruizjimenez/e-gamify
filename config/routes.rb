@@ -21,7 +21,7 @@ EGamify::Application.routes.draw do
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
   resources :shops do
-    get 'analytics' => 'shops#analytics'
+    get 'analytics'
     resources :users do
       get 'logout'
       get 'redeem/:reward_id' => 'users#redeem'

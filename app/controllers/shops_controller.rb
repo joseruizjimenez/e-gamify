@@ -11,7 +11,7 @@ class ShopsController < ApplicationController
       name: "Welcome!",
       info: "Now you can start getting rewards!",
       init: true,
-      add_points: 15,
+      add_points: [15],
       add_msg: "Just won 15 points with your first login!",
       cost: 0,
       img_uri: "/img/rewards/swap-bag.png",
@@ -23,7 +23,7 @@ class ShopsController < ApplicationController
       init: true,
       repeatable: true,
       redeem_hits: [5],
-      add_points: 1,
+      add_points: [1],
       add_msg: "Just won 1 point with your like!",
       cost: 0,
       img_uri: "/img/rewards/shining-heart.png",
@@ -34,7 +34,7 @@ class ShopsController < ApplicationController
       info: "Thanks for sharing some love!",
       init: true,
       repeatable: true,
-      add_points: 1,
+      add_points: [1],
       add_msg: "Just won 1 points with your sharing!",
       cost: 0,
       img_uri: "/img/rewards/conversation.png",
@@ -90,7 +90,7 @@ class ShopsController < ApplicationController
 
 
   def analytics
-    @shop = current_site_owner.shops.find params[:id]
+    @shop = current_site_owner.shops.find params[:shop_id]
     if @shop.nil?
       redirect_to "/"
     else

@@ -5,30 +5,8 @@ $ = window.jQuery
 Two = window.Two
 touch_counter = 0
 current_reward_hits = {}
+current_reward_points = {}
 img_to_change = undefined
-
-draw_add_level = ->
-  params = { width: 180, height: 230 }
-  $('.two-canvas').each ()->
-    canvas = $(this)[0]
-    two = new Two(params).appendTo(canvas)
-    line = two.makeLine(0, 140, 30, 140)
-    line.stroke = "orange"
-    line.linewidth = 3
-    line.opacity = 0.60
-    v_line = two.makeLine(60, 125, 60, 155)
-    v_line.stroke = "orange"
-    h_line = two.makeLine(45, 140, 75, 140)
-    h_line.stroke = "orange"
-    circle = two.makeCircle(60, 140, 30)
-    circle.fill = 'rgb(255, 221, 161)'
-    circle.stroke = 'orange'
-    circle.linewidth = 3
-    circle.opacity = 0.60
-    two_circles.push(circle)
-    two_groups.push(two.makeGroup(circle, v_line, h_line))
-    two.update()
-    two_instances.push(two)
 
 
 darkerColor = (rgba_color)->
@@ -40,6 +18,18 @@ darkerColor = (rgba_color)->
   red = parseInt(red * (100 - darkenPercent) / 100)
   green = parseInt(green * (100 - darkenPercent) / 100)
   blue = parseInt(blue * (100 - darkenPercent) / 100)
+  "rgba(" + red + ", " + green + ", " + blue + ", " + rgb[3] + ")"
+
+
+lighterColor = (rgba_color)->
+  lightenPercent = 15
+  rgb = rgba_color.replace("rgba(", "").replace(")", "").split(",")
+  red = $.trim(rgb[0])
+  green = $.trim(rgb[1])
+  blue = $.trim(rgb[2])
+  red = parseInt(red * (100 + lightenPercent) / 100)
+  green = parseInt(green * (100 + lightenPercent) / 100)
+  blue = parseInt(blue * (100 + lightenPercent) / 100)
   "rgba(" + red + ", " + green + ", " + blue + ", " + rgb[3] + ")"
 
 
@@ -80,7 +70,26 @@ makeSun = (two) ->
   sun
 
 
-draw_sun = ->
+makeMoon = (two) ->
+  color = "rgba(255, 255, 40, 0.9)"
+  moon = two.makeGroup()
+  #radius = two.height / 4
+  radius = 40
+  #gutter = two.height / 20
+  gutter = 8
+  core = two.makeCircle(0, 0, radius)
+  core.noStroke()
+  core.fill = color
+  moon.core = core
+  moon.shadow = two.makeCircle(15, 0, radius/1.3)
+  moon.shadow.noStroke()
+  moon.shadow.fill = "white"
+  moon.add(core).add moon.shadow
+  moon.opacity = 0.85
+  moon
+
+
+draw_level_buttons = ->
   increment = Math.PI / 256
   TWO_PI = Math.PI * 2
 
@@ -89,35 +98,52 @@ draw_sun = ->
     canvas = $(this)[0]
     two = new Two(params).appendTo(canvas)
     sun = makeSun(two)
-    sun.translation.set(two.width / 2, two.height / 2)
-    line = two.makeLine(0, two.height / 2, two.width / 2, two.height / 2)
-    line.stroke = "rgb(255, 92, 0)"
+    sun.translation.set(two.width / 2, two.height / 4)
+    moon = makeMoon(two)
+    moon.translation.set(two.width / 2, two.height*3 / 4)
+    line = two.makeLine(0, two.height / 4, (two.width / 2)-40, two.height / 4)
+    line.stroke = "rgba(255, 92, 0, 0.7)"
     line.linewidth = 2
-    line.opacity = 0.80
+    line.opacity = 0.90
+    line_moon = two.makeLine(0, two.height*3 / 4, (two.width / 2)-40, two.height*3 / 4)
+    line_moon.stroke = "#FFE83D"
+    line_moon.linewidth = 2
+    line_moon.opacity = 0.90
 
     sun.reward_node = $(this).attr "reward"
     sun.redeem_hits = $(this).attr("levels").split(',')
+    sun.add_points = $(this).attr("points").split(',')
     .map (n)->
       parseInt n, 10
     current_reward_hits[sun.reward_node] = sun.redeem_hits
+    current_reward_points[sun.reward_node] = sun.add_points
     sun.level_count = 0
     hits_input = $('#'+sun.reward_node).find("#reward_redeem_hits")
     hits_input.change ()->
       sun.redeem_hits[sun.level_count] = parseInt hits_input.val(), 10
       current_reward_hits[sun.reward_node] = sun.redeem_hits
+    points_input = $('#'+sun.reward_node).find("#reward_add_points")
+    points_input.change ()->
+      sun.add_points[sun.level_count] = parseInt points_input.val(), 10
+      current_reward_points[sun.reward_node] = sun.add_points
+
     sun.domElement = $(this).find('#two-' + sun.id)
     sun.domElement.css('cursor', 'pointer')
     .click ()->
       hits_input = $('#'+sun.reward_node).find("#reward_redeem_hits")
-      unless hits_input.val() is ''
+      points_input = $('#'+sun.reward_node).find("#reward_add_points")
+      unless hits_input.val() is '' or points_input.val() is ''
         sun.level_count++
         hits_input.unbind 'change'
+        points_input.unbind 'change'
         hits_btn = $('#'+sun.reward_node).find(".btn-primary").first()
         if sun.redeem_hits.length <= sun.level_count
           hits_input.attr "value", ''
+          points_input.attr "value", ''
           hits_btn.text "Add!"
         else
           hits_input.attr "value", sun.redeem_hits[sun.level_count]
+          points_input.attr "value", sun.add_points[sun.level_count]
           hits_btn.text "Edit!"
         hits_input.change ()->
           if sun.redeem_hits.length <= sun.level_count
@@ -125,38 +151,56 @@ draw_sun = ->
           else
             sun.redeem_hits[sun.level_count] = parseInt hits_input.val(), 10
           current_reward_hits[sun.reward_node] = sun.redeem_hits
+        points_input.change ()->
+          if sun.add_points.length <= sun.level_count
+            sun.add_points.push(parseInt(points_input.val(), 10))
+          else
+            sun.add_points[sun.level_count] = parseInt points_input.val(), 10
+          current_reward_points[sun.reward_node] = sun.add_points
         background = $('#'+sun.reward_node)
         darker_color = darkerColor background.css('background-color')
         background.css 'background-color', darker_color
 
+    moon.domElement = $(this).find('#two-' + moon.id)
+    moon.domElement.css('cursor', 'pointer')
+    .click ()->
+      hits_input = $('#'+sun.reward_node).find("#reward_redeem_hits")
+      points_input = $('#'+sun.reward_node).find("#reward_add_points")
+      unless sun.level_count is 0
+        sun.level_count--
+        hits_input.unbind 'change'
+        points_input.unbind 'change'
+        hits_btn = $('#'+sun.reward_node).find(".btn-primary").first()
+        hits_input.attr "value", sun.redeem_hits[sun.level_count]
+        points_input.attr "value", sun.add_points[sun.level_count]
+        hits_btn.text "Edit!"
+        hits_input.change ()->
+          sun.redeem_hits[sun.level_count] = parseInt hits_input.val(), 10
+          current_reward_hits[sun.reward_node] = sun.redeem_hits
+        points_input.change ()->
+          sun.add_points[sun.level_count] = parseInt points_input.val(), 10
+          current_reward_points[sun.reward_node] = sun.add_points
+        background = $('#'+sun.reward_node)
+        lighter_color = lighterColor background.css('background-color')
+        background.css 'background-color', lighter_color
+
     two.bind("resize", ->
       sun.translation.x = two.width / 2
-      sun.translation.y = two.height / 2
+      sun.translation.y = two.height / 4
       path.translation.copy sun.translation
+      moon.translation.x = two.width / 2
+      moon.translation.y = two.height*3 / 4
+      path.translation.copy moon.translation
     ).bind("update", (frameCount) ->
       sun.rotation = 0  if sun.rotation >= TWO_PI - 0.0125
       sun.rotation += (TWO_PI - sun.rotation) * 0.0125
+      moon.rotation = 0  if moon.rotation >= TWO_PI - 0.0125
+      moon.rotation += (TWO_PI - moon.rotation) * 0.0125
     ).play()
 
     # TODO
     # implementar luna, metida en draw_sun. si es lvl 0 no hace nada, sino:
     #   disminuye color, el lvl. preguntar en boton solo por edit?
-
-
-init_animation = ->
-  two_instances[0].bind('update', (frameCount)->
-    if two_circles[0].scale > 0.9999
-      two_circles[0].scale = 0
-    t = (1 - two_circles[0].scale) * 0.125
-    two_circles[0].scale += t
-  ).play()
-
-
-scaleCircles = (scale)->
-  two_circles.forEach (c)->
-    c.scale = scale
-  two_instances.forEach (i)->
-    i.update()
 
 
 # Some hotfixes for UI to work as desired on startup
@@ -204,10 +248,10 @@ $("form").submit ()->
   if has_update_field
     reward_id = $(this).find(".reward-node").attr 'id'
     new_reward_hits = current_reward_hits[reward_id].join(',')
+    new_reward_points = current_reward_points[reward_id].join(',')
     $(this).find("#reward_redeem_hits").attr 'value', new_reward_hits
+    $(this).find("#reward_add_points").attr 'value', new_reward_points
   return true
 
 
-#draw_add_level()
-draw_sun()
-#init_animation()
+draw_level_buttons()
