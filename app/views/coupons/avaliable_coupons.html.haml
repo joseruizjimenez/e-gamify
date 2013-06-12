@@ -43,7 +43,7 @@
   %br
   %br
   .pull-left.tag-title= link_to "Take me back", shop_user_path(@shop, @user) + "?s_token=" + @user.s_token
-  .pull-right.tag-title Total points: #{@user.points.to_s}
+  %span.badge.badge-success.pull-right.tag-title Total points: #{@user.points.to_s}
   %br
 
 #redeem-coupon.modal.hide.fade

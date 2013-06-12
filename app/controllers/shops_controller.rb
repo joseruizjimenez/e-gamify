@@ -94,8 +94,134 @@ class ShopsController < ApplicationController
     if @shop.nil?
       redirect_to "/"
     else
-      # TODO: fallback to analytics haml
+      #@shop.users.each do |u|
+      #  day_random = Random.new.rand(1..120)
+      #  u.last_action_at = Time.now - day_random.days
+      #  u.save!
+      #end
+      puts Time.now
+      # First tab: DASHBOARD
+      @total_page_views = PageView.count(shop_id: @shop.id.to_s)
+      unique_visits_map = PageView.count_visits_by "ip_address",
+        {:query => { shop_id: params[:shop_id] }}
+      @total_unique_visits = unique_visits_map.length
+      unique_reg_visits_map = PageView.count_visits_by "user_id",
+        {:query => { shop_id: params[:shop_id], user_id: {'$ne' => ""} } }
+      @total_unique_reg_visits = unique_reg_visits_map.length
+      @page_views_last_week = PageView.count(
+        :shop_id => @shop.id.to_s,
+        :created_at =>
+        { '$gt' => 1.week.ago.beginning_of_week, '$lt' => 1.week.ago.end_of_week }
+      )
+      @customers_affiliation_rate = (@total_unique_reg_visits*100/@total_unique_visits).round(1)
+
+      monthly_visits = PageView.where(
+        :shop_id => @shop.id.to_s,
+        :created_at =>
+        { '$gt' => 1.month.ago.beginning_of_month, '$lt' => 1.month.ago.end_of_month }
+      )
+      monthly_registered_visits = PageView.where(
+        :shop_id => @shop.id.to_s,
+        :user_id => {'$ne' => ""},
+        :created_at =>
+        { '$gt' => 1.month.ago.beginning_of_month, '$lt' => 1.month.ago.end_of_month }
+      )
+      @monthly_visits_graph = [
+        { name: "Total visitors",
+          data: count_grouped(monthly_visits, :created_at, 'beginning_of_day') },
+        { name: "Registered visitors",
+          data: count_grouped(monthly_registered_visits, :created_at, 'beginning_of_day') }
+      ]
+      puts Time.now
+
+      # Second tab: REGISTERS
+      @average_page_views =
+        (unique_visits_map.values.inject(:+) / @total_unique_visits).round(1)
+      @average_reg_page_views =
+        (unique_reg_visits_map.values.inject(:+) / @total_unique_reg_visits).round(1)
+      @created_users_last_week = User.count(
+        :shop_id => @shop.id.to_s,
+        :created_at =>
+        { '$gt' => 1.week.ago.beginning_of_week, '$lt' => 1.week.ago.end_of_week }
+      )
+      @created_users_last_month = User.count(
+        :shop_id => @shop.id.to_s,
+        :created_at =>
+        { '$gt' => 1.month.ago.beginning_of_month, '$lt' => 1.month.ago.end_of_month }
+      )
+
+      week_number = 1
+      weekly_unique_visits = {}
+      8.times do
+        unique_visits_w = PageView.count_visits_by "ip_address", { :query => {
+          shop_id: params[:shop_id],
+          created_at: { '$gt' => week_number.weeks.ago.beginning_of_week.utc,
+                        '$lt' => week_number.weeks.ago.end_of_week.utc } } }
+        unique_reg_visits_w = PageView.count_visits_by "user_id", { :query => {
+          shop_id: params[:shop_id],
+          user_id: {'$ne' => ""},
+          created_at: { '$gt' => week_number.weeks.ago.beginning_of_week.utc,
+                        '$lt' => week_number.weeks.ago.end_of_week.utc } } }
+        weekly_unique_visits[week_number.weeks.ago.beginning_of_week] =
+          (unique_reg_visits_w.length * 100 / unique_visits_w.length).round
+        week_number += 1
+      end
+      @weekly_customers_affiliation_graph = weekly_unique_visits
+      puts Time.now
+
+      # Third tab: ACTIONS
+      # total_actions_data = User.count_actions :query => {
+      #   shop_id: params[:shop_id]
+      # }
+      # monthly_actions_data = User.count_actions :query => {
+      #   shop_id: params[:shop_id],
+      #   last_action_at: { '$gt' => 1.month.ago.beginning_of_month.utc,
+      #                     '$lt' => 1.month.ago.end_of_month.utc }
+      # }
+      # @total_actions = total_actions_data.shares + total_actions_data.likes +
+      #                 total_actions_data.buys
+      # @monthly_actions = monthly_actions_data.shares + monthly_actions_data.likes +
+      #                 monthly_actions_data.buys
+      # @total_social_actions = total_actions_data.shares + total_actions_data.likes
+      # @total_buy_actions = total_actions_data.buys
+      # @average_actions = @monthly_actions / monthly_actions_data.users_count
+      # @monthly_actions_graph = []
+      # @monthly_actions_graph["Shares"] = monthly_actions_data.shares*100 / @total_actions
+      # @monthly_actions_graph["Likes"] = monthly_actions_data.likes*100 / @total_actions
+      # @monthly_actions_graph["Buys"] = monthly_actions_data.buys*100 / @total_actions
+      # puts Time.now
+
+      # Fourth tab: COUPONS
     end
+  end
+
+
+  def count_grouped(collection, field, freq)
+    group = {}
+    case freq
+    when 'day_of_week'
+      selector = "strftime('%A')"
+    when 'day_of_month'
+      selector = "strftime('%d')"
+    when 'day_of_year'
+      selector = "strftime('%j')"
+    when 'beginning_of_day'
+      selector = "beginning_of_day"
+    when 'beginning_of_week'
+      selector = "beginning_of_week"
+    when 'beginning_of_month'
+      selector = "beginning_of_month"
+    when 'week'
+      selector = "strftime('%W')"
+    when 'month'
+      selector = "strftime('%B')"
+    end
+    collection.each do |o|
+      selected_group = o.send(field).send(selector)
+      group[selected_group] ||= 0
+      group[selected_group] += 1
+    end
+    group
   end
 
 end

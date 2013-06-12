@@ -26,9 +26,11 @@
         .container-fluid
           .content
             .row-fluid
-              .span8.offset2
+              .span2= yield(:left_side)
+              .span8
                 = render 'layouts/messages'
                 = yield
+              .span2= yield(:right_side)
     - else
       = yield
 

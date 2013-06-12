@@ -18,6 +18,7 @@ class User
   key :pages_visited, Integer, :default => 1
   key :logins, Integer, :default => 1
   key :visited_at, Time
+  key :last_action_at, Time, :default => Time.now
   key :redeemed_rewards, Hash
   key :reward_hits, Hash
   timestamps!
@@ -91,6 +92,8 @@ class User
       self.likes_count += 1
     elsif reward.name == "sharing"
       self.shares_count += 1
+    elsif reward.name.include? "buy"
+      self.buys_count += 1
     end
 
     if redeemed
@@ -105,6 +108,8 @@ class User
       add_msg = reward.add_msg
     end
 
+    self.last_action_at = Time.now
+
     if self.save!
       if redeemed
         reward.redeemed += 1
@@ -113,6 +118,44 @@ class User
     end
 
     return add_points, add_msg
+  end
+
+
+  def self.count_actions(opts={})
+    opts[:out] = "map_reduce_results"
+    map = <<-MAP
+              function() {
+                emit( this.user_id, {
+                  shares: this.shares_count,
+                  likes: this.likes_count,
+                  buys: this.buys_count
+                });
+              }
+            MAP
+    reduce = <<-REDUCE
+                function(k, v) {
+                  var total_users = 0;
+                  var shares = 0;
+                  var likes = 0;
+                  var buys = 0;
+                  for (var i in v) {
+                    total_users += 1;
+                    shares += v[i]["shares"];
+                    likes += v[i]["likes"];
+                    buys += v[i]["buys"];
+                  }
+                  return { shares: shares, likes: likes, buys: buys,
+                    total_users: total_users };
+                }
+              REDUCE
+
+    v = User.collection.map_reduce(map, reduce, opts).find().to_a()[0]
+    data = { shares: v["value"]["shares"],
+            likes: v["value"]["likes"],
+            buys: v["value"]["buys"],
+            users_count: v["value"]["total_users"] }
+    puts data.inspect
+    data
   end
 
 end

@@ -202,3 +202,11 @@ body {
   border-top: rgb(245, 201, 135);
   border-bottom-color: rgb(58, 240, 160);
 }
+
+.side-pannel {
+  margin-top: 20px;
+}
+
+#chart-1 #chart-2 {
+  margin-bottom: 3px;
+}

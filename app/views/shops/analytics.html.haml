@@ -1,22 +1,98 @@
-- content_for :bottom do
+- content_for :head do
   - javascript_include_tag "//www.google.com/jsapi", "chartkick"
 
+- content_for :bottom do
+  %script{src: "/assets/analytics_utils.js"}
+
+
+- content_for :left_side do
+  .side-pannel
+    %ul.nav.nav-pills.nav-stacked
+      %li.tag-field Choose a panel
+      %p
+      %li.tag-field.active
+        %a{:'data-toggle' => "tab", href: '#tab_1'} Dashboard
+      %li.tag-field
+        %a{:'data-toggle' => "tab", href: '#tab_2'} Accounts
+      %li.tag-field
+        %a{:'data-toggle' => "tab", href: '#tab_3'} Actions
+      %li.tag-field
+        %a{:'data-toggle' => "tab", href: '#tab_4'} Coupons
+      %li.tag-field
+        %a{:'data-toggle' => "tab", href: '#tab_5'} Others
+
 %br
+%br
+.tabbable
+  .tab-content
+    .tab-pane.graph-tab.active{id: "tab_1"}
+      %span.badge.badge-success.tag-title.pull-left Total unique visitors: #{@total_unique_visits}
+      %span.badge.badge-info.tag-title.pull-left Total registered visitors: #{@total_unique_reg_visits}
+      %span.badge.badge-success.tag-title.pull-right Customers affiliation rate: #{@customers_affiliation_rate}%
+      %br
+      %span.badge.badge-important.tag-title.pull-left Total page views: #{@total_page_views}
+      %span.badge.badge-warning.tag-title.pull-left Page views last week: #{@page_views_last_week}
+      %br
+      %br
+      .centered
+        %u.tag-title Last month visits:
+      .centered
+        = line_chart @monthly_visits_graph, height: "280px"
+    .tab-pane.graph-tab.active{id: "tab_2"}
+      %span.badge.badge-info.tag-title.pull-left Non-registered user's average page views: #{@average_page_views}
+      %span.badge.badge-success.tag-title.pull-right Registered user's average page views: #{@average_reg_page_views}
+      %br
+      %span.badge.badge-warning.tag-title.pull-left New accounts created last week: #{@created_users_last_week}
+      %span.badge.badge-default.tag-title.pull-right New accounts created last month: #{@created_users_last_month}
+      %br
+      %br
+      .centered
+        %u.tag-title Customers affiliation rate for the last 8 weeks (%):
+      .centered
+        = line_chart @weekly_customers_affiliation_graph, height: "280px"
+    .tab-pane.graph-tab.active{id: "tab_3"}
+      %span.badge.badge-success.tag-title.pull-left Total actions performed: #{@total_actions}
+      %span.badge.badge-info.tag-title.pull-left Last month total actions: #{@monthly_actions}
+      %span.badge.badge-success.tag-title.pull-right Total social actions: #{@total_social_actions}%
+      %br
+      %span.badge.badge-important.tag-title.pull-left Average actions performed per user: #{@average_actions}
+      %span.badge.badge-warning.tag-title.pull-right Total "buy" actions: #{@total_buy_actions}
+      %br
+      %br
+      .centered
+        %u.tag-title Actions performed last month:
+      .centered
+        = line_chart @monthly_actions_graph, height: "280px"
+    .tab-pane.graph-tab.active{id: "tab_4"}
+      %span.badge.badge-success.tag-title.pull-left Total unique visitors: #{@total_unique_visits}
+      %span.badge.badge-info.tag-title.pull-left Total registered visitors: #{@total_unique_reg_visits}
+      %span.badge.badge-success.tag-title.pull-right Customers affiliation rate: #{@customers_affiliation_rate}%
+      %br
+      %span.badge.badge-important.tag-title.pull-left Total page views: #{@total_page_views}
+      %span.badge.badge-warning.tag-title.pull-left Page views last week: #{@page_views_last_week}
+      %br
+      %br
+      .centered
+        %u.tag-title Last month visits:
+      .centered
+        = line_chart @monthly_visits_graph, height: "280px"
+    .tab-pane.graph-tab.active{id: "tab_5"}
+      %span.badge.badge-success.tag-title.pull-left Total unique visitors: #{@total_unique_visits}
+      %span.badge.badge-info.tag-title.pull-left Total registered visitors: #{@total_unique_reg_visits}
+      %span.badge.badge-success.tag-title.pull-right Customers affiliation rate: #{@customers_affiliation_rate}%
+      %br
+      %span.badge.badge-important.tag-title.pull-left Total page views: #{@total_page_views}
+      %span.badge.badge-warning.tag-title.pull-left Page views last week: #{@page_views_last_week}
+      %br
+      %br
+      .centered
+        %u.tag-title Last month visits:
+      .centered
+        = line_chart @monthly_visits_graph, height: "280px"
+    %p
 #yellow.well.well-large
   .tag-title Review your shop's analytics
   %p
   %p Here you can learn <b>what your clients are up to</b>, from what day of the week they make the most activity to the percentage of users signing up to our loyalty program. How many points do they make per day of the week or what coupons the love the most! Use this data to <u>plan effective campaigns</u> and grow the <u>comunity</u> around your shop.
-.tabbable
-  %ul.nav.nav-tabs
-    %li.active
-      %a{:'data-toggle' => "tab", href: '#tab_1'} Dashboard
-    %li
-      %a{:'data-toggle' => "tab", href: '#tab_2'} Accounts
-  .tab-content
-    .tab-pane.active{id: "tab_1"}
-      .centered Hola 1
-    .tab-pane{id: "tab_2"}
-      .centered Hola2
-
-.pull-left.tag-title= link_to "Take me back", shop_path(@shop)
-%br
+  .pull-left.tag-title= link_to "Take me back", shop_path(@shop)
+  %br
