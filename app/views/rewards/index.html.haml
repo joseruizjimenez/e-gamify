@@ -88,7 +88,7 @@
               //  .two-canvas
 
 .tag-title.pull-right= link_to "Take me back!", shop_path(@shop)
-#reward-id.tag-title.pull-left Reward ID: <code>#{@shop.rewards.sort_by(&:updated_at)[0].id.to_s}</code>
+#reward-id.tag-title.pull-left Reward Tag: <code>#{"<div class='e-gamify-reward' reward-id='"}#{@shop.rewards.sort_by(&:updated_at)[0].id.to_s}#{"'></div>"}</code>
 
 #reward-images.modal.hide.fade
   .modal-header

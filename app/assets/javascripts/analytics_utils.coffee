@@ -6,4 +6,4 @@ $ = window.jQuery
 setTimeout () ->
   $(".graph-tab").removeClass "active"
   $("#tab_1").addClass "active"
-, 15
+, 20

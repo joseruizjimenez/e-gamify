@@ -121,15 +121,17 @@ class User
   end
 
 
-  def self.count_actions(opts={})
+  def self.count_actions(shop_id, opts={})
     opts[:out] = "map_reduce_results"
     map = <<-MAP
               function() {
-                emit( this.user_id, {
-                  shares: this.shares_count,
-                  likes: this.likes_count,
-                  buys: this.buys_count
-                });
+                if (this.shop_id == "#{shop_id}") {
+                  emit( this.shop_id, {
+                    shares: this.shares_count,
+                    likes: this.likes_count,
+                    buys: this.buys_count
+                  });
+                }
               }
             MAP
     reduce = <<-REDUCE
@@ -149,12 +151,49 @@ class User
                 }
               REDUCE
 
-    v = User.collection.map_reduce(map, reduce, opts).find().to_a()[0]
-    data = { shares: v["value"]["shares"],
-            likes: v["value"]["likes"],
-            buys: v["value"]["buys"],
-            users_count: v["value"]["total_users"] }
-    puts data.inspect
+    data = nil
+    User.collection.map_reduce(map, reduce, opts).find().each do |v|
+      data = { shares: v["value"]["shares"],
+              likes: v["value"]["likes"],
+              buys: v["value"]["buys"],
+              users_count: v["value"]["total_users"] }
+    end
+    data
+  end
+
+
+  def self.count_redeemed(shop_id, opts={})
+    opts[:out] = "map_reduce_results"
+    map = <<-MAP
+              function() {
+                if (this.shop_id == "#{shop_id}") {
+                  for (var c in this.coupons) {
+                    emit( this.coupons[c].description, {
+                      count: 1,
+                      user_id: this._id.str
+                    } );
+                  }
+                }
+              }
+            MAP
+    reduce = <<-REDUCE
+                function(k, v) {
+                  var count = 0;
+                  var total_users = {};
+                  for (var i in v) {
+                    count += 1;
+                    total_users[v[i]["user_id"]] = 1;
+                  }
+                  return { count: count, total_users: total_users };
+                }
+              REDUCE
+
+    data = {}
+    User.collection.map_reduce(map, reduce, opts).find().each do |v|
+      data[v["_id"]] = { amount: v["value"]["count"],
+                        total_users: v["value"]["total_users"]
+                      }
+    end
     data
   end
 

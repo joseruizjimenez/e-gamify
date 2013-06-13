@@ -94,11 +94,6 @@ class ShopsController < ApplicationController
     if @shop.nil?
       redirect_to "/"
     else
-      #@shop.users.each do |u|
-      #  day_random = Random.new.rand(1..120)
-      #  u.last_action_at = Time.now - day_random.days
-      #  u.save!
-      #end
       puts Time.now
       # First tab: DASHBOARD
       @total_page_views = PageView.count(shop_id: @shop.id.to_s)
@@ -170,28 +165,66 @@ class ShopsController < ApplicationController
       puts Time.now
 
       # Third tab: ACTIONS
-      # total_actions_data = User.count_actions :query => {
-      #   shop_id: params[:shop_id]
-      # }
-      # monthly_actions_data = User.count_actions :query => {
-      #   shop_id: params[:shop_id],
-      #   last_action_at: { '$gt' => 1.month.ago.beginning_of_month.utc,
-      #                     '$lt' => 1.month.ago.end_of_month.utc }
-      # }
-      # @total_actions = total_actions_data.shares + total_actions_data.likes +
-      #                 total_actions_data.buys
-      # @monthly_actions = monthly_actions_data.shares + monthly_actions_data.likes +
-      #                 monthly_actions_data.buys
-      # @total_social_actions = total_actions_data.shares + total_actions_data.likes
-      # @total_buy_actions = total_actions_data.buys
-      # @average_actions = @monthly_actions / monthly_actions_data.users_count
-      # @monthly_actions_graph = []
-      # @monthly_actions_graph["Shares"] = monthly_actions_data.shares*100 / @total_actions
-      # @monthly_actions_graph["Likes"] = monthly_actions_data.likes*100 / @total_actions
-      # @monthly_actions_graph["Buys"] = monthly_actions_data.buys*100 / @total_actions
-      # puts Time.now
+      total_actions_data = User.count_actions params[:shop_id]
+      monthly_actions_data = User.count_actions params[:shop_id], {:query => {
+        last_action_at: { '$gt' => 1.month.ago.beginning_of_month.utc,
+                          '$lt' => 1.month.ago.end_of_month.utc }
+        } }
+      t_month_actions_data = User.count_actions params[:shop_id], {:query => {
+        last_action_at: { '$gt' => 2.month.ago.beginning_of_month.utc,
+                          '$lt' => 2.month.ago.end_of_month.utc }
+        } }
+      @total_actions = (total_actions_data[:shares] + total_actions_data[:likes] +
+        total_actions_data[:buys]).round
+      @monthly_actions = (monthly_actions_data[:shares] + monthly_actions_data[:likes] +
+        monthly_actions_data[:buys]).round
+      @t_month_actions = (t_month_actions_data[:shares] + t_month_actions_data[:likes] +
+        t_month_actions_data[:buys]).round
+      @total_social_actions = (total_actions_data[:shares] +
+        total_actions_data[:likes]).round
+      @total_buy_actions = (total_actions_data[:buys]).round
+      @average_actions = (@monthly_actions / monthly_actions_data[:users_count]).round
+      @monthly_actions_graph = {}
+      @monthly_actions_graph["Shares"] = (monthly_actions_data[:shares]*100 /
+        monthly_actions_data[:users_count]).round(2)
+      @monthly_actions_graph["Likes"] = (monthly_actions_data[:likes]*100 /
+        monthly_actions_data[:users_count]).round(2)
+      @monthly_actions_graph["Buys"] = (monthly_actions_data[:buys]*100 /
+        monthly_actions_data[:users_count]).round(2)
+      puts Time.now
 
       # Fourth tab: COUPONS
+      redeemed_coupons = User.count_redeemed params[:shop_id]
+      @total_redeemed_coupons = 0
+      redeemed_coupons.each { |v, c| @total_redeemed_coupons += c[:amount].round }
+
+      month_redeemed_coupons = User.count_redeemed params[:shop_id], {:query => {
+        "coupons.created_at" => { '$gt' => 1.month.ago.beginning_of_month.utc,
+                                  '$lt' => 1.month.ago.end_of_month.utc }
+        } }
+      @month_redeemed_coupons = 0
+      month_redeemed_coupons.values.each { |c| @month_redeemed_coupons += c[:amount].round }
+
+      @average_points_spent = 23
+
+      @coupons_distribution_graph = {}
+      redeemed_coupons.each do |c, d|
+        @coupons_distribution_graph[c] = d[:amount]
+      end
+
+      most_redeemed_name = ""
+      most_redeemed_times = 0
+      @coupons_distribution_graph.each do |c, v|
+        if v >= most_redeemed_times
+          most_redeemed_name = c
+          most_redeemed_times = v
+        end
+      end
+      @most_redeemed = {name: most_redeemed_name, times: most_redeemed_times}
+      @w_most_redeemed = {name: most_redeemed_name, times: most_redeemed_times}
+      puts Time.now
+
+      # Fith tab: OTHERS
     end
   end
 

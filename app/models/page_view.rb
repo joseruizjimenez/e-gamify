@@ -26,7 +26,6 @@ class PageView
 
     data = {}
     a = PageView.collection.map_reduce(map, reduce, opts).find().each do |v|
-      #data[v["_id"]] = {user_id: v["value"]["user_id"], count: v["value"]["count"]}
       data[v["_id"]] = v["value"]["count"]
     end
     data

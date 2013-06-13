@@ -211,7 +211,7 @@ $(".nav-tabs li").click ->
   if choosen_id is "new"
     $("#reward-id").html ""
   else
-    $("#reward-id").html "Reward ID: <code>" + choosen_id + "</code>"
+    $("#reward-id").html "Reward Tag: <code>&#60;div class='e-gamify-reward' reward-id='" + choosen_id + "&#60;/div></code>"
 
 $(".choose-img").css('cursor', 'pointer')
 
