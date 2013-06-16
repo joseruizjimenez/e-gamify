@@ -1,16 +1,18 @@
-%h2
-  Edit your #{resource_name.to_s.humanize.downcase} account
 = simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
   = f.error_notification
-  #yellow.well
-    = f.input :email, :required => false, :autofocus => true
-    = f.input :password, :autocomplete => "off", :required => false
-    = f.input :password_confirmation, :required => false
-    = f.input :current_password, :hint => "we need your current password to confirm your changes", :required => false
-    = f.button :submit, "Update"
-    %a.btn{ :href => root_path }
-      %i.icon-home
-      Return
-%h3 Cancel my account
-%p
-  Unhappy? #{link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete}.
+  .span3
+  .span6
+    %h2 Edit your #{resource_name.to_s.humanize.downcase} account
+    #yellow.well
+      = f.input :email, :required => false, :autofocus => true
+      = f.input :password, :autocomplete => "off", :required => false
+      = f.input :password_confirmation, :required => false
+      = f.input :current_password, :hint => "we need your current password to confirm your changes", :required => false
+      = f.button :submit, "Update"
+      %a.btn{ :href => root_path }
+        %i.icon-home
+        Return
+    .another-frame.pull-left
+      %h3 Cancel my account
+      %p
+        Unhappy? #{link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete}.

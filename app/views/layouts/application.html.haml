@@ -1,39 +1,42 @@
-!!! 5
-%html
-  %head
-    %meta{:charset => "utf-8"}
-    %meta{"http-equiv" => "X-UA-Compatible", :content => "IE=edge,chrome=1"}
-    %meta{:name => "viewport", :content => "width=device-width, initial-scale=1.0"}
-    %meta{:name => "description", :content => "EGamify is a gamification plataform for online shops"}
-    %meta{:name => "author", :content => "Jose Ruiz Jimenez - joseruizjimenez@gmail.com"}
-    %title EGamify
-    - if not params[:fb_lt]
-      = render 'layouts/egamify_head_content'
-    = csrf_meta_tags
-    = yield(:head)
+- if params[:controller] == "home" and params[:action] == "index"
+  = yield
+- else
+  !!! 5
+  %html
+    %head
+      %meta{:charset => "utf-8"}
+      %meta{"http-equiv" => "X-UA-Compatible", :content => "IE=edge,chrome=1"}
+      %meta{:name => "viewport", :content => "width=device-width, initial-scale=1.0"}
+      %meta{:name => "description", :content => "EGamify is a gamification plataform for online shops"}
+      %meta{:name => "author", :content => "Jose Ruiz Jimenez - joseruizjimenez@gmail.com"}
+      %title EGamify
+      - if not params[:fb_lt]
+        = render 'layouts/egamify_head_content'
+      = csrf_meta_tags
+      = yield(:head)
 
-  %body
-    - if not params[:fb_lt]
-      -# Navigation top bar (bootstrap)
-      %header.navbar.navbar-fixed-top
-        .navbar-inner
-          .container
-            .span8.offset2
-              = render 'layouts/navigation'
+    %body
+      - if not params[:fb_lt]
+        -# Navigation top bar (bootstrap)
+        %header.navbar.navbar-fixed-top
+          .navbar-inner
+            .container
+              .span8.offset2
+                = render 'layouts/navigation'
 
-      -# Main body container (bootstrap)
-      #main{:role => "main"}
-        .container-fluid
-          .content
-            .row-fluid
-              .span2= yield(:left_side)
-              .span8
-                = render 'layouts/messages'
-                = yield
-              .span2= yield(:right_side)
-    - else
-      = yield
+        -# Main body container (bootstrap)
+        #main{:role => "main"}
+          .container-fluid
+            .content
+              .row-fluid
+                .span2= yield(:left_side)
+                .span8
+                  = render 'layouts/messages'
+                  = yield
+                .span2= yield(:right_side)
+      - else
+        = yield
 
-    - if not params[:fb_lt]
-      = render 'layouts/egamify_bottom_content'
-    = yield(:bottom)
+      - if not params[:fb_lt]
+        = render 'layouts/egamify_bottom_content'
+      = yield(:bottom)

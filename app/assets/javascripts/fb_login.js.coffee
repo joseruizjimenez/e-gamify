@@ -1,6 +1,7 @@
 
 fb_app_id = "451013134972296"
-e_gamify_domain = "localhost:3000"
+#e_gamify_domain = "localhost:3000"
+e_gamify_domain = "e-gamify.com"
 fb_login_token = undefined
 shop_id = undefined
 debugger_mode = true
