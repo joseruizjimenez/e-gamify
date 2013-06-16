@@ -15,9 +15,9 @@
       %li.tag-field
         %a{:'data-toggle' => "tab", href: '#tab_2'} Accounts
       %li.tag-field
-        %a{:'data-toggle' => "tab", href: '#tab_3'} Actions
-      %li.tag-field
         %a{:'data-toggle' => "tab", href: '#tab_4'} Coupons
+      %li.tag-field
+        %a{:'data-toggle' => "tab", href: '#tab_3'} Actions
       %li.tag-field
         %a{:'data-toggle' => "tab", href: '#tab_5'} Others
 
@@ -51,13 +51,13 @@
       .centered
         = line_chart @weekly_customers_affiliation_graph, height: "280px"
     .tab-pane.graph-tab.active{id: "tab_3"}
-      %span.badge.badge-success.tag-title.pull-left Total actions performed: #{@total_actions}
+      %span.badge.badge-warning.tag-title.pull-left Total actions performed: #{@total_actions}
       %span.badge.badge-success.tag-title.pull-right 2 months ago actions: #{@t_month_actions}
       %span.badge.badge-info.tag-title.pull-right Last month total actions: #{@monthly_actions}
       %br
       %span.badge.badge-important.tag-title.pull-right Average actions performed per user: #{@average_actions}
       %span.badge.badge-info.tag-title.pull-left Total social actions: #{@total_social_actions}
-      %span.badge.badge-warning.tag-title.pull-left Total "buy" actions: #{@total_buy_actions}
+      %span.badge.badge-success.tag-title.pull-left Total "buy" actions: #{@total_buy_actions}
       %br
       %br
       .centered
@@ -67,10 +67,10 @@
     .tab-pane.graph-tab.active{id: "tab_4"}
       %span.badge.badge-success.tag-title.pull-left Total redeemed coupons: #{@total_redeemed_coupons}
       %span.badge.badge-info.tag-title.pull-left Last month: #{@month_redeemed_coupons}
-      %span.badge.badge-success.tag-title.pull-right Average points spent per user: #{@average_points_spent}
+      %span.badge.badge-info.tag-title.pull-right Average points spent per user: #{@average_points_spent}
       %br
-      %span.badge.badge-important.tag-title.pull-left Most redeemed coupon: #{@most_redeemed[:name] + " (" + @most_redeemed[:times].to_s + " times)"}
-      %span.badge.badge-warning.tag-title.pull-right Most redeemed last week: #{@w_most_redeemed[:name] + " (" + @w_most_redeemed[:times].to_s + " times)"}
+      %span.badge.badge-important.tag-title.pull-left Coupons expiring this month: #{@expiring_coupons}
+      %span.badge.badge-warning.tag-title.pull-right Most redeemed last month: #{@m_most_redeemed[:name] + " (" + @m_most_redeemed[:times].to_s + " times)"}
       %br
       %br
       .centered
@@ -78,18 +78,16 @@
       .centered
         = column_chart @coupons_distribution_graph, height: "280px"
     .tab-pane.graph-tab.active{id: "tab_5"}
-      %span.badge.badge-success.tag-title.pull-left Total unique visitors: #{@total_unique_visits}
-      %span.badge.badge-info.tag-title.pull-left Total registered visitors: #{@total_unique_reg_visits}
-      %span.badge.badge-success.tag-title.pull-right Customers affiliation rate: #{@customers_affiliation_rate}%
+      %span.badge.badge-warning.tag-title.pull-left Most active day of the week: #{@active_day_week}
+      %span.badge.badge-success.tag-title.pull-right Customers profile views: #{@customers_profile_views}
       %br
-      %span.badge.badge-important.tag-title.pull-left Total page views: #{@total_page_views}
-      %span.badge.badge-warning.tag-title.pull-left Page views last week: #{@page_views_last_week}
+      %span.badge.badge-info.tag-title.pull-left Mobile visits percent: #{@mobile_visits}%
       %br
       %br
       .centered
-        %u.tag-title Last month visits:
+        %u.tag-title User's points distribution:
       .centered
-        = line_chart @monthly_visits_graph, height: "280px"
+        = column_chart @points_distribution_graph, height: "280px"
     %p
 #yellow.well.well-large
   .tag-title Review your shop's analytics

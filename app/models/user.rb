@@ -197,4 +197,115 @@ class User
     data
   end
 
+
+  def self.most_redeems_week_day(shop_id, opts={})
+    opts[:out] = "map_reduce_results"
+    map = <<-MAP
+              function() {
+                if (this.shop_id == "#{shop_id}") {
+                  for (var c in this.coupons) {
+                    emit( this.coupons[c].created_at.getDay(), {
+                      count: 1
+                    } );
+                  }
+                }
+              }
+            MAP
+    reduce = <<-REDUCE
+                function(k, v) {
+                  var count = 0;
+                  for (var i in v) {
+                    count += 1;
+                  }
+                  return { count: count };
+                }
+              REDUCE
+
+    data = {}
+    User.collection.map_reduce(map, reduce, opts).find().each do |v|
+      data[v["_id"]] = v["value"]["count"]
+    end
+    data
+  end
+
+
+  def self.most_redeems_week_number(shop_id, opts={})
+    opts[:out] = "map_reduce_results"
+    map = <<-MAP
+              function() {
+                if (this.shop_id == "#{shop_id}") {
+                  for (var c in this.coupons) {
+                    var date = this.coupons[c].created_at;
+                    var dowOffset = 0;
+                    var newYear = new Date(date.getFullYear(),0,1);
+                    var day = newYear.getDay() - dowOffset;
+                    day = (day >= 0 ? day : day + 7);
+                    var daynum = Math.floor((date.getTime() - newYear.getTime() -
+                    (date.getTimezoneOffset()-newYear.getTimezoneOffset())*60000)/86400000) + 1;
+                    var weeknum;
+                    //if the year starts before the middle of a week
+                    if(day < 4) {
+                      weeknum = Math.floor((daynum+day-1)/7) + 1;
+                      if(weeknum > 52) {
+                        nYear = new Date(this.getFullYear() + 1,0,1);
+                        nday = nYear.getDay() - dowOffset;
+                        nday = nday >= 0 ? nday : nday + 7;
+                        weeknum = nday < 4 ? 1 : 53;
+                      }
+                    }
+                    else {
+                      weeknum = Math.floor((daynum+day-1)/7);
+                    }
+                    emit( weeknum, {
+                      count: 1
+                    } );
+                  }
+                }
+              }
+            MAP
+    reduce = <<-REDUCE
+                function(k, v) {
+                  var count = 0;
+                  for (var i in v) {
+                    count += 1;
+                  }
+                  return { count: count };
+                }
+              REDUCE
+
+    data = {}
+    User.collection.map_reduce(map, reduce, opts).find().each do |v|
+      data[v["_id"]] = v["value"]["count"]
+    end
+    data
+  end
+
+
+  def self.points_histogram(shop_id, opts={})
+    opts[:out] = "map_reduce_results"
+    map = <<-MAP
+              function() {
+                if (this.shop_id == "#{shop_id}") {
+                  var range = Math.floor(this.points / 30);
+                  emit( range, { count: 1 } );
+                }
+              }
+            MAP
+    reduce = <<-REDUCE
+                function(k, v) {
+                  var count = 0;
+                  for (var i in v) {
+                    count += 1;
+                  }
+                  return { count: count };
+                }
+              REDUCE
+
+    data = []
+    User.collection.map_reduce(map, reduce, opts).find().each do |v|
+      data[v["_id"]] = v["value"]["count"]
+    end
+    data
+  end
+
 end

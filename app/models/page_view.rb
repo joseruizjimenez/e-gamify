@@ -31,4 +31,32 @@ class PageView
     data
   end
 
+
+  def self.count_mobile_visits(opts={})
+    opts[:out] = "map_reduce_results"
+    map = <<-MAP
+              function() {
+                var re = /Mobile|webOS/;
+                if (re.test(this.user_agent)) {
+                  emit( this.shop_id, { count: 1 } );
+                }
+              }
+            MAP
+    reduce = <<-REDUCE
+                function(k, v) {
+                  var count = 0;
+                  for (var i in v) {
+                    count += 1;
+                  }
+                  return { count: count };
+                }
+              REDUCE
+
+    data = nil
+    a = PageView.collection.map_reduce(map, reduce, opts).find().each do |v|
+      data = v["value"]["count"]
+    end
+    data
+  end
+
 end

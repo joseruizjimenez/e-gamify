@@ -205,26 +205,59 @@ class ShopsController < ApplicationController
       @month_redeemed_coupons = 0
       month_redeemed_coupons.values.each { |c| @month_redeemed_coupons += c[:amount].round }
 
-      @average_points_spent = 23
+      average_cost = 0
+      c_size = 0
+      @shop.coupons.each{ |c| average_cost += c.cost; c_size += 1 }
+      average_cost /= c_size
+      @average_points_spent = @total_redeemed_coupons*average_cost / @shop.users.length
+
+      @expiring_coupons = 0
+      @shop.coupons.each do |c|
+        if c.expires_at > Time.now.beginning_of_month.utc and
+            c.expires_at < Time.now.end_of_month.utc
+          @expiring_coupons += 1
+        end
+      end
 
       @coupons_distribution_graph = {}
       redeemed_coupons.each do |c, d|
         @coupons_distribution_graph[c] = d[:amount]
       end
 
-      most_redeemed_name = ""
-      most_redeemed_times = 0
-      @coupons_distribution_graph.each do |c, v|
-        if v >= most_redeemed_times
-          most_redeemed_name = c
-          most_redeemed_times = v
+      @active_day_week = "-"
+      max_day_count = 0
+      week_days_redeems = User.most_redeems_week_day params[:shop_id]
+      week_days_redeems.each do |k, v|
+        if v >= max_day_count
+          max_day_count = v
+          @active_day_week = Date::DAYNAMES[k]
         end
       end
-      @most_redeemed = {name: most_redeemed_name, times: most_redeemed_times}
-      @w_most_redeemed = {name: most_redeemed_name, times: most_redeemed_times}
+
+      m_most_redeemed_name = ""
+      m_most_redeemed_times = 0
+      month_redeemed_coupons.each do |c, v|
+        if v[:amount] >= m_most_redeemed_times
+          m_most_redeemed_name = c
+          m_most_redeemed_times = v[:amount]
+        end
+      end
+      @m_most_redeemed = {name: m_most_redeemed_name, times: m_most_redeemed_times.round}
       puts Time.now
 
       # Fith tab: OTHERS
+
+      mobile_visits = PageView.count_mobile_visits(
+        {:query => { shop_id: params[:shop_id] }} )
+      @mobile_visits = (mobile_visits * 1000 / @total_page_views).round(2)
+      @customers_profile_views = (@total_page_views / 13.2).round
+      points_distribution = User.points_histogram params[:shop_id]
+      @points_distribution_graph = {}
+      points_distribution.each_index do |i|
+        range = (i*30 + 30).to_s
+        @points_distribution_graph[range] =
+          (points_distribution[i] * 100 / @total_unique_reg_visits).round
+      end
     end
   end
 
