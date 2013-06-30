@@ -4,7 +4,7 @@
 
 %br
 #yellow.well.well-large
-  .tag-title Manage your rewards
+  .tag-title Manage your shop's archievements
   %p
   %p You can easily <u>add, remove or edit rewards</u> for your customers from this graph. First tag them under one category, then create a new reward. You can make it <b>repeatable</b> or even <b>create different levels</b> for each reward!
   %p When you are done, grab your reward id and paste the tag where you want the user to find it and get his points!
@@ -65,8 +65,8 @@
           .pull-left.span3
             %p
             .centered
-              %img.reward-img.choose-img{src:"http://e-gamify.com/img/rewards/choose.png",alt:"r.name", reward_id: "new_img_uri"}
-            = f.input :img_uri, :required => false, :as => :hidden, input_html: { value: "http://e-gamify.com/img/rewards/choose.png" }
+              %img.reward-img.choose-img{src:"https://e-gamify.com/img/rewards/choose.png",alt:"r.name", reward_id: "new_img_uri"}
+            = f.input :img_uri, :required => false, :as => :hidden, input_html: { value: "https://e-gamify.com/img/rewards/choose.png" }
             = f.input :name, :label => "Reward's name", :placeholder => "Ex: sharing", :required => false, input_html: { value: "", class: "span12" }
             = f.input :info, :placeholder => "Add a description", :required => false, input_html: { value: "", class: "span12", style: "height: 60px" }, as: "text"
           .pull-right.span9
@@ -96,44 +96,44 @@
     %h3 Choose the reward's image
   .modal-body
     .reward-img-thumbnails
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/ace.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/back-forth.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/bookmarklet.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/cake-slice.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/capitol.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/cash.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/cctv-camera.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/checked-shield.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/coffee-mug.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/conversation.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/crown.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/crown-coin.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/domino-mask.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/dozen.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/flower-pot.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/flying-flag.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/gears.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/gems.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/letter-bomb.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/magnifying-glass.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/medal.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/muscle-up.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/night-sky.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/queen-crown.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/radar-dish.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/raining.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/rocket.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/scales.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/shark-jaws.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/shining-heart.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/shiny-purse.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/stopwatch.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/surprised-skull.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/swap-bag.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/telepathy.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/tic-tac-toe.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/tied-scroll.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/trousers.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/umbrella.png"}
-      %img.reward-img-thumbnail{src: "http://e-gamify.com/img/rewards/wave-crest.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/ace.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/back-forth.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/bookmarklet.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/cake-slice.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/capitol.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/cash.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/cctv-camera.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/checked-shield.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/coffee-mug.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/conversation.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/crown.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/crown-coin.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/domino-mask.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/dozen.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/flower-pot.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/flying-flag.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/gears.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/gems.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/letter-bomb.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/magnifying-glass.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/medal.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/muscle-up.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/night-sky.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/queen-crown.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/radar-dish.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/raining.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/rocket.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/scales.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/shark-jaws.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/shining-heart.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/shiny-purse.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/stopwatch.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/surprised-skull.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/swap-bag.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/telepathy.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/tic-tac-toe.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/tied-scroll.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/trousers.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/umbrella.png"}
+      %img.reward-img-thumbnail{src: "https://e-gamify.com/img/rewards/wave-crest.png"}
   .modal-footer

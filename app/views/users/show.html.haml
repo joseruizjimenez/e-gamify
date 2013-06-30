@@ -20,26 +20,47 @@
     %br
     .field= link_to "Get coupons with points", shop_user_coupons_path(@shop, @user) + "?s_token=" + @user.s_token
   #user-rewards
+    - reward_counter = 0
     %ul.thumbnails
       - @user.reward_hits.each do |reward_id, hits|
         - r = (@shop.rewards.select { |r| r.id.to_s == reward_id })[0]
-        %li.span4
-          .thumbnail
-            %img.reward-img{src:r.img_uri,alt:r.name}
-            %h3.reward-name.centered= r.name
-            %p= r.info
-            - n = @user.redeemed_rewards[r.id.to_s]
-            - if @user.redeemed_rewards[r.id.to_s].nil? or r.add_points.length <= @user.redeemed_rewards[r.id.to_s]
-              %p <b>Points rewarded:</b> #{r.add_points[0]} (x #{n} time#{"s" unless n == 1})
-            - else
-              %p <b>Points rewarded:</b> #{r.add_points[@user.redeemed_rewards[r.id.to_s]]} (x #{n} time#{"s" unless n == 1})
-            .progress.progress-striped.active
-              - if r.repeatable
-                .bar{style: "width: "+((hits*100+1)/(r.redeem_hits[0])).to_s+"%"}
-              - elsif @user.redeemed_rewards[r.id.to_s].nil? or r.add_points.length <= @user.redeemed_rewards[r.id.to_s]
-                .bar{style: "width: "+((hits*100)/(r.redeem_hits[r.redeem_hits.length-1])).to_s+"%"}
+        - if reward_counter % 3 == 0
+          %li.span4{style: "margin-left: 0;"}
+            .thumbnail
+              %img.reward-img{src:r.img_uri,alt:r.name}
+              %h3.reward-name.centered= r.name
+              %p= r.info
+              - n = @user.redeemed_rewards[r.id.to_s]
+              - if @user.redeemed_rewards[r.id.to_s].nil? or r.add_points.length <= @user.redeemed_rewards[r.id.to_s]
+                %p <b>Points rewarded:</b> #{r.add_points[0]} (x #{n} time#{"s" unless n == 1})
               - else
-                .bar{style: "width: "+((hits*100+1)/(r.redeem_hits[@user.redeemed_rewards[r.id.to_s]])).to_s+"%"}
+                %p <b>Points rewarded:</b> #{r.add_points[@user.redeemed_rewards[r.id.to_s]]} (x #{n} time#{"s" unless n == 1})
+              .progress.progress-striped.active
+                - if r.repeatable
+                  .bar{style: "width: "+((hits*100+1)/(r.redeem_hits[0])).to_s+"%"}
+                - elsif @user.redeemed_rewards[r.id.to_s].nil? or r.add_points.length <= @user.redeemed_rewards[r.id.to_s]
+                  .bar{style: "width: "+((hits*100)/(r.redeem_hits[r.redeem_hits.length-1])).to_s+"%"}
+                - else
+                  .bar{style: "width: "+((hits*100+1)/(r.redeem_hits[@user.redeemed_rewards[r.id.to_s]])).to_s+"%"}
+        - else
+          %li.span4
+            .thumbnail
+              %img.reward-img{src:r.img_uri,alt:r.name}
+              %h3.reward-name.centered= r.name
+              %p= r.info
+              - n = @user.redeemed_rewards[r.id.to_s]
+              - if @user.redeemed_rewards[r.id.to_s].nil? or r.add_points.length <= @user.redeemed_rewards[r.id.to_s]
+                %p <b>Points rewarded:</b> #{r.add_points[0]} (x #{n} time#{"s" unless n == 1})
+              - else
+                %p <b>Points rewarded:</b> #{r.add_points[@user.redeemed_rewards[r.id.to_s]]} (x #{n} time#{"s" unless n == 1})
+              .progress.progress-striped.active
+                - if r.repeatable
+                  .bar{style: "width: "+((hits*100+1)/(r.redeem_hits[0])).to_s+"%"}
+                - elsif @user.redeemed_rewards[r.id.to_s].nil? or r.add_points.length <= @user.redeemed_rewards[r.id.to_s]
+                  .bar{style: "width: "+((hits*100)/(r.redeem_hits[r.redeem_hits.length-1])).to_s+"%"}
+                - else
+                  .bar{style: "width: "+((hits*100+1)/(r.redeem_hits[@user.redeemed_rewards[r.id.to_s]])).to_s+"%"}
+        - reward_counter += 1
   #redeemed-rewards
   .field{style: "display: inline; font-size: small; font-style: italic;"} Showing your latest rewards
   .pull-right= link_to(raw("<div class='text-error'> Delete this account</div>"), shop_user_path(@shop, @user) + "?s_token=" + @user.s_token, :method => :delete, :data => { :confirm => 'Do you want to delete your account?' })

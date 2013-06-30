@@ -17,7 +17,7 @@ blank_state_html = "<div id='e-gamify-user-wrap' style='display: none;'>
                       <div id='e-gamify-avatar'></div>
                     </div>
                     <div id='e-gamify-iframe' style='display: none;'></div>
-                    <div id='e-gamify-status'><img src='http://" + e_gamify_domain +
+                    <div id='e-gamify-status'><img src='https://" + e_gamify_domain +
                     "/widgets/img/ajax-loader.gif'></img></div>"
 
 idle_status_html = "Welcome back and happy shopping!"
@@ -27,10 +27,10 @@ fonts_html = "<link href='https://fonts.googleapis.com/css?family=Ubuntu|Open+Sa
 loginStatusHTML = ->
   "<p>Welcome to " + shop_name +
     "!</p><p>Login and start <b>collecting points</b>!</p>
-    <div id=e-gamify-powered>Powered by: <a href='http://www.e-gamify.com'>e-gamify.com</a>"
+    <div id=e-gamify-powered>Powered by: <a href='https://www.e-gamify.com'>e-gamify.com</a>"
 
 fBLoginIframeHTML = (shop_id, fb_login_token) ->
-  "<iframe id='e-gamify-fb-login' src='http://"+e_gamify_domain+"/widgets/fb_login?s=" +
+  "<iframe id='e-gamify-fb-login' src='https://"+e_gamify_domain+"/widgets/fb_login?s=" +
     shop_id + "&fb_lt=" + fb_login_token + "' width='100%' height='200px' frameborder='0' scrolling='no'></iframe>"
 
 nameHTML = (name) ->
@@ -39,7 +39,7 @@ nameHTML = (name) ->
 avatarHTML = (fb_id, shop_id, user_id, s_token) ->
   "<img id='e-gamify-avatar-img' src='https://graph.facebook.com/" +
     fb_id + "/picture'><div id='e-gamify-avatar-menu' style='display:none;'>
-    <div id='e-gamify-avatar-menu-profile'><p><a href='http://"+e_gamify_domain+"/shops/" +
+    <div id='e-gamify-avatar-menu-profile'><p><a href='https://"+e_gamify_domain+"/shops/" +
     shop_id + "/users/" + user_id + "?s_token=" + s_token + "' target='_blank'>profile</a></p></div>
     <div id='e-gamify-avatar-menu-logout'><a href='#'>logout</a></div></div>"
 
@@ -113,10 +113,10 @@ updateStatusMsg = (msg) ->
   s = $("#e-gamify-status")
   s.fadeOut 'fast', () ->
     s.css('color', '#3874FF')
-    s.html(msg).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).fadeOut(500)
+    s.html(msg).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).delay(200).fadeOut(500).fadeIn(500).delay(200).fadeOut(500).fadeIn(500).delay(200).fadeOut(500)
     setTimeout () ->
       s.css('color', '#344D9D').fadeIn(500)
-    , 2500
+    , 5100
 
 
 updatePointsAnimation = (msg, points) ->
@@ -125,10 +125,10 @@ updatePointsAnimation = (msg, points) ->
   unless points is 0
     p = $("#e-gamify-p")
     p.fadeOut 'fast', () ->
-      p.css('color', '#00EB10').html("+ " + points).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).fadeOut(500)
+      p.css('color', '#00EB10').html("+ " + points).fadeIn(500).delay(500).fadeOut(500).fadeIn(500).delay(200).fadeOut(500).fadeIn(500).delay(200).fadeOut(500).fadeIn(500).delay(200).fadeOut(500)
       setTimeout () ->
         p.css('color', '#20D31D').html(user.points).fadeIn(500)
-      , 2500
+      , 5100
 
 
 headlineMarquee = (msg, points) ->
@@ -152,7 +152,7 @@ headlineMarquee = (msg, points) ->
 redeemReward = (reward_id, shop_id, user_id, s_token) ->
   # posts a reward to the server, redeeming it, then queue his headline
   log "Main_bar: Redeeming reward " + reward_id
-  jsonp_url = "http://"+e_gamify_domain+"/shops/"+shop_id+"/users/"+user_id+"/redeem/"+reward_id+"?s_token="+s_token+"&callback=?"
+  jsonp_url = "https://"+e_gamify_domain+"/shops/"+shop_id+"/users/"+user_id+"/redeem/"+reward_id+"?s_token="+s_token+"&callback=?"
   $.getJSON jsonp_url, (data) ->
     if data isnt undefined and data.new_points isnt undefined
       log "Main_bar: Reward "+reward_id+" redeemed ("+data.new_points_msg+"+"+data.new_points+"p)"
@@ -205,7 +205,7 @@ redeemPoints = (user, shop_id) ->
 
 logoutUser = (user, shop_id, s_token) ->
   setUserCookies undefined
-  jsonp_url = "http://"+e_gamify_domain+"/shops/"+shop_id+"/users/"+user.id+"/logout?s_token="+s_token+"&callback=?"
+  jsonp_url = "https://"+e_gamify_domain+"/shops/"+shop_id+"/users/"+user.id+"/logout?s_token="+s_token+"&callback=?"
   $.getJSON jsonp_url, (data) ->
     setUserCookies(data)
     if data isnt undefined and data.ok
@@ -250,7 +250,7 @@ updateUserStatus = (logued_user, shop_id, s_token) ->
 fetchUser = (shop_id, user_id, s_token) ->
   # fetchs user data from e-gamify
   log "Main_bar: fetching user data..."
-  jsonp_url = "http://"+e_gamify_domain+"/shops/"+shop_id+"/users/"+user_id+"?s_token="+s_token+"&callback=?"
+  jsonp_url = "https://"+e_gamify_domain+"/shops/"+shop_id+"/users/"+user_id+"?s_token="+s_token+"&callback=?"
   $.getJSON jsonp_url, (data) ->
     setUserCookies(data)
     if data isnt undefined and data.name isnt undefined
@@ -264,7 +264,7 @@ fetchUser = (shop_id, user_id, s_token) ->
 
 pollFBLoginStatus = (login_checks, freq_time, shop_id, fb_login_token) ->
   # crossdomain check fb login status each freq_time period for login_checks iterations
-  jsonp_url = "http://"+e_gamify_domain+"/widgets/fb_check?s=" + shop_id +
+  jsonp_url = "https://"+e_gamify_domain+"/widgets/fb_check?s=" + shop_id +
     "&fb_lt=" + fb_login_token + "&callback=?"
   checking = setInterval () ->
     if (login_checks < 0 or (user isnt undefined and user.id isnt undefined))
@@ -338,7 +338,7 @@ main = ->
     css_link = $("<link>",
       rel: "stylesheet"
       type: "text/css"
-      href: "http://"+e_gamify_domain+"/widgets/css/main_bar/" + style + ".css"
+      href: "https://"+e_gamify_domain+"/widgets/css/main_bar/" + style + ".css"
     )
     css_link.appendTo "head"
     $("head").append fonts_html

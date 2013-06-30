@@ -124,12 +124,8 @@ class UsersController < ApplicationController
   def destroy
     user = User.verify params[:shop_id], params[:id], params[:s_token]
     unless user.nil?
-      @shop = Shop.find params[:shop_id]
-      unless @shop.nil?
-        @shop.users.delete_if {|u| u.id.to_s == params[:id]}
-        if @shop.save!
-          flash[:notice] = "Your account was <b>deleted</b> successfully!"
-        end
+      if user.destroy
+        flash[:notice] = "Your account was <b>deleted</b> successfully!"
       end
     end
     redirect_to "/"

@@ -157,8 +157,12 @@ class ShopsController < ApplicationController
           user_id: {'$ne' => ""},
           created_at: { '$gt' => week_number.weeks.ago.beginning_of_week.utc,
                         '$lt' => week_number.weeks.ago.end_of_week.utc } } }
-        weekly_unique_visits[week_number.weeks.ago.beginning_of_week] =
-          (unique_reg_visits_w.length * 100 / unique_visits_w.length).round
+        if unique_visits_w.length == 0
+          weekly_unique_visits[week_number.weeks.ago.beginning_of_week] = 0
+        else
+          weekly_unique_visits[week_number.weeks.ago.beginning_of_week] =
+            (unique_reg_visits_w.length * 100 / unique_visits_w.length).round
+        end
         week_number += 1
       end
       @weekly_customers_affiliation_graph = weekly_unique_visits
@@ -170,10 +174,23 @@ class ShopsController < ApplicationController
         last_action_at: { '$gt' => 1.month.ago.beginning_of_month.utc,
                           '$lt' => 1.month.ago.end_of_month.utc }
         } }
+      if  monthly_actions_data.nil?
+        monthly_actions_data = {}
+        monthly_actions_data[:shares] = 0
+        monthly_actions_data[:likes] = 0
+        monthly_actions_data[:buys] = 0
+        monthly_actions_data[:users_count] = 1
+      end
       t_month_actions_data = User.count_actions params[:shop_id], {:query => {
         last_action_at: { '$gt' => 2.month.ago.beginning_of_month.utc,
                           '$lt' => 2.month.ago.end_of_month.utc }
         } }
+      if t_month_actions_data.nil?
+        t_month_actions_data = {}
+        t_month_actions_data[:shares] = 0
+        t_month_actions_data[:likes] = 0
+        t_month_actions_data[:buys] = 0
+      end
       @total_actions = (total_actions_data[:shares] + total_actions_data[:likes] +
         total_actions_data[:buys]).round
       @monthly_actions = (monthly_actions_data[:shares] + monthly_actions_data[:likes] +
@@ -249,6 +266,7 @@ class ShopsController < ApplicationController
 
       mobile_visits = PageView.count_mobile_visits(
         {:query => { shop_id: params[:shop_id] }} )
+      mobile_visits ||= 0
       @mobile_visits = (mobile_visits * 1000 / @total_page_views).round(2)
       @customers_profile_views = (@total_page_views / 13.2).round
       points_distribution = User.points_histogram params[:shop_id]

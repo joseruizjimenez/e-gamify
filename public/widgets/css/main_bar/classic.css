@@ -3,6 +3,7 @@
   position:fixed !important;
   position: absolute; /*ie6 */
   /*right: 0.5em;*/
+  z-index: 1;
   right: 8px;
   /*bottom: 0.2em;*/
   bottom: 4px;

@@ -1,7 +1,120 @@
 #e-gamify-main-bar {
-  background-color: red;
+  background-color: rgba(255, 113, 113, 0.8);
   position:fixed !important;
   position: absolute; /*ie6 */
-  right: 1em;
-  bottom: 0;
+  /*right: 0.5em;*/
+  z-index: 1;
+  right: 8px;
+  /*bottom: 0.2em;*/
+  bottom: 4px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  /*font-size: 1.3em;*/
+  color: #333333;
+  border-color: rgb(255, 50, 50);
+  border-style: solid;
+  /*border-width: 0.15em;*/
+  border-width: 2.25px;
+  margin: 0;
+  padding: 0;
+  line-height: 18px;
+  /*display: none;*/
+}
+
+#e-gamify-main-bar a {
+  color: #0088cc;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+#e-gamify-main-bar a:hover {
+  color: #005580;
+  text-decoration: underline;
+  font-weight: normal;
+}
+
+#e-gamify-main-bar p {
+  margin: 0 0 9px;
+}
+
+#e-gamify-main-bar iframe {
+  width: 70px;
+  height: 70px;
+  /*display: none;
+  visibility: hidden;*/
+}
+
+#e-gamify-iframe {
+  position: relative;
+  float: right;
+  /*margin: 0.3em;*/
+  margin: 4.5px;
+  /*margin-bottom: 0.1em;*/
+  margin-bottom: 1.5px;
+}
+
+#e-gamify-status {
+  position: relative;
+  float: left;
+  /*margin: 0.35em;*/
+  margin: 5.8px;
+  color: #344D9D;
+}
+
+#e-gamify-name {
+  position: relative;
+  float: left;
+  margin: 5.8px;
+  /*margin: 0.35em;*/
+}
+
+#e-gamify-avatar {
+  position: relative;
+  float: right;
+  margin: 7.6px;
+  /*margin: 0.45em;*/
+  width: 50px;
+  height: 50px;
+}
+/*
+#e-gamify-avatar-menu-profile {
+  color: #3582C0;
+}
+
+#e-gamify-avatar-menu-profile:hover {
+  text-decoration: underline;
+}
+
+#e-gamify-avatar-menu-logout {
+  color: #F86753;
+}
+
+#e-gamify-avatar-menu-logout:hover {
+  text-decoration: underline;
+}*/
+
+#e-gamify-points {
+  position: relative;
+  float: left;
+  margin: 5.8px;
+  /*margin: 0.35em;*/
+  font-family: 'Ubuntu', sans-serif;
+}
+
+#e-gamify-ep {
+  float: left;
+  margin-right: 3px;
+  /*margin-right: 0.2em;*/
+}
+
+#e-gamify-p {
+  float: right;
+  color: #20D31D;
+}
+
+#e-gamify-powered {
+  font-style: italic;
+  font-size: x-small;
+  position: absolute;
 }

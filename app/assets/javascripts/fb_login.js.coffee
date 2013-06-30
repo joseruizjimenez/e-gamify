@@ -23,7 +23,7 @@ postUser = (expires_in, access_token) ->
       "fb_access_token" : access_token
     }
     req = jQuery.ajax
-      url: "http://"+e_gamify_domain+"/shops/" + shop_id + "/users/"
+      url: "https://"+e_gamify_domain+"/shops/" + shop_id + "/users/"
       type: "POST"
       data: JSON.stringify(user)
       contentType: 'application/json'
@@ -40,10 +40,10 @@ checkUserStatus = ->
       log "FB: user connected"
       postUser response.authResponse.expiresIn, response.authResponse.accessToken
     else if response.status is "not_authorized"
-      $("#e-gamify-fb-bt").html "<a href='#'><img src='http://"+e_gamify_domain+"/widgets/img/fb_login.png'></img></a>"
+      $("#e-gamify-fb-bt").html "<a href='#'><img src='https://"+e_gamify_domain+"/widgets/img/fb_login.png'></img></a>"
       log "FB: user not authorized"
     else
-      $("#e-gamify-fb-bt").html "<a href='#'><img src='http://"+e_gamify_domain+"/widgets/img/fb_login.png'></img></a>"
+      $("#e-gamify-fb-bt").html "<a href='#'><img src='https://"+e_gamify_domain+"/widgets/img/fb_login.png'></img></a>"
       log "FB: user not logued"
 
 
@@ -64,7 +64,7 @@ window.fbAsyncInit = ->
   jQuery(document).ready ($) ->
     shop_id = $("#e-gamify-fb-login-token").attr("s")
     fb_login_token = $("#e-gamify-fb-login-token").attr("fb_lt")
-    $("#e-gamify-fb-bt").html "<a href='#'><img src='http://"+e_gamify_domain+"/widgets/img/fb_login.png'></img></a>"
+    $("#e-gamify-fb-bt").html "<a href='#'><img src='https://"+e_gamify_domain+"/widgets/img/fb_login.png'></img></a>"
     $("#e-gamify-fb-bt").click ->
       login()
     log "FB: Ready to check login status..."

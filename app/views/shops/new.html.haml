@@ -3,7 +3,7 @@
   = f.error_notification
   #yellow.well
     = f.input :name, :autofocus => true, :placeholder => 'My Shop', :required => false
-    = f.input :uri, :placeholder => 'http://www.myshop.com', :required => false
+    = f.input :uri, :placeholder => 'https://www.myshop.com', :required => false
     %span.help-block= link_to('Terms of Service', '/legal/service.html') +" and "+ link_to('Privacy Policy', '/legal/privacy.html')
     %button.btn.btn-primary{:name => "commit", :type => "submit"}
       %b Create
